@@ -1,0 +1,4 @@
+﻿  ConsoleApplication3.cpp
+C:\Users\XT\source\repos\ConsoleApplication3\ConsoleApplication3.cpp(69,12): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+C:\Users\XT\source\repos\ConsoleApplication3\ConsoleApplication3.cpp(70,12): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+  ConsoleApplication3.vcxproj -> C:\Users\XT\source\repos\ConsoleApplication3\x64\Debug\ConsoleApplication3.exe
