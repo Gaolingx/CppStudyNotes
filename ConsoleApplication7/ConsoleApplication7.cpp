@@ -44,7 +44,7 @@ void main()
 		case STATE_GAME:
 			setcolor(WHITE);
 			settextstyle(55, 0, L"宋体");
-			outtextxy(250, 100, L"预计114514天完成");
+			outtextxy(150, 100, L"预计114514天完成");
 			break;
 		}
 
