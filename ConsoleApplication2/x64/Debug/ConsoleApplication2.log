@@ -1,6 +1,0 @@
-﻿  ConsoleApplication2.cpp
-C:\Users\XT\source\repos\ConsoleApplication2\ConsoleApplication2.cpp(26,40): warning C4474: printf: 格式字符串中传递的参数太多
-C:\Users\XT\source\repos\ConsoleApplication2\ConsoleApplication2.cpp(26,40): message : 占位符和其参数预计 0 可变参数，但提供的却是 1 参数
-C:\Users\XT\source\repos\ConsoleApplication2\ConsoleApplication2.cpp(28,40): warning C4474: printf: 格式字符串中传递的参数太多
-C:\Users\XT\source\repos\ConsoleApplication2\ConsoleApplication2.cpp(28,40): message : 占位符和其参数预计 0 可变参数，但提供的却是 1 参数
-  ConsoleApplication2.vcxproj -> C:\Users\XT\source\repos\ConsoleApplication2\x64\Debug\ConsoleApplication2.exe
