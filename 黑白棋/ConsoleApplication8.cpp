@@ -216,13 +216,13 @@ void GameStartUI()
 }
 int main()
 {
-	printf("你希望黑方先走吗？（输入1确定，2为白棋先走）\n");
-	scanf_s("%d", &blackFirst);
+	printf("你希望黑方先走吗？（输入y确定，n为白棋先走）\n");
+	scanf_s("%c", &blackFirst);
 	switch (blackFirst)
 	{
-	case 1:player = PLAYER_1;
+	case 'y':player = PLAYER_1;
 		break;
-	case 2:player = PLAYER_2;
+	case 'n':player = PLAYER_2;
 		break;
 	default:printf("Error\n");
 
