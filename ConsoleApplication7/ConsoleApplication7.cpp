@@ -25,7 +25,7 @@ void main()
 		case STATE_MENU:
 			setcolor(RGB(rand() % 256, rand() % 256, rand() % 256));
 			settextstyle(55, 0, L"宋体");
-			outtextxy(110, 100, L"奴 隶 少 女 希 尔 薇");
+			outtextxy(110, 100, L"原 来 你 也 玩 原 神");
 			settextstyle(20, 0, L"宋体");
 			outtextxy(110, 200, L"冷狐无伤版 v1.0.11");
 			settextstyle(32, 0, L"宋体");
@@ -72,7 +72,7 @@ void main()
 		case STATE_LOADING:
 			setcolor(WHITE);
 			settextstyle(55, 0, L"宋体");
-			outtextxy(110, 100, L"奴 隶 少 女 希 尔 薇");
+			outtextxy(110, 100, L"原 来 你 也 玩 原 神");
 			setcolor(WHITE);
 			rectangle(150, 450, 650, 480);
 			setcolor(WHITE);
