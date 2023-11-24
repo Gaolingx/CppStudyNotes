@@ -13,6 +13,24 @@ COLORREF cc[9] = { WHITE,GREEN,BLUE,RED,YELLOW,BROWN,CYAN ,MAGENTA ,RGB(200,200,
 static int array[30][30];
 int cx = 14, cy = 14;
 int isdeath = 0;
+int ts, flag = 0;
+int countBomb = 0;
+
+
+int countB()
+{
+	int count = 0;
+	for (int i = 0; i < 30; i++)
+	{
+		for (int j = 0; j < 30; j++)
+		{
+			if (array[i][j] == 9)
+				count++;
+
+		}
+	}
+	return count;
+}
 
 void initArray()
 {
@@ -100,6 +118,7 @@ void drawGame()
 			}
 			else if (array[i][j] < 19) {
 				setcolor(cc[array[i][j] - 10]);
+				settextstyle(20, 0, L"楷体");
 				rectangle(0 + j * 20, 200 + i * 20, 20 + j * 20, 220 + i * 20);
 				wsprintf(c, L"%d", array[i][j] - 10);
 				outtextxy(5 + j * 20, 202 + i * 20, c);
@@ -114,6 +133,12 @@ void drawGame()
 	setcolor(RGB(150, 0, 150));
 	setfillcolor(RGB(150, 0, 150));
 	fillcircle(10 + cx * 20, 210 + cy * 20, 5);
+	setcolor(WHITE);
+	settextstyle(50, 0, L"楷体");
+	wsprintf(c, L"时间：%d", ts);
+	outtextxy(350, 50, c);
+	wsprintf(c, L"雷数：%d", countBomb);
+	outtextxy(20, 50, c);
 }
 
 void isNum(int cx, int cy)
@@ -212,6 +237,10 @@ void GameControl()
 				cx = 14;
 				cy = 14;
 				isdeath = 0;
+				//重置之后清零
+				ts = 0;
+				flag = 0;
+				countBomb = countB();
 			}
 		}
 	
@@ -220,6 +249,14 @@ void GameControl()
 
 void GameLogic()
 {
+	if (isdeath==0)
+	{
+	if (flag % 10 == 0)  //我们希望每秒更新
+	{
+		ts++;
+	}
+	}
+	flag++;
 
 }
 
@@ -230,6 +267,7 @@ int main()
 	initArray();
 	createBomb(99);
 	fillArray();
+	countBomb = countB();
 	//testshowArray();
 	BeginBatchDraw();
 	while (1)
