@@ -30,13 +30,49 @@ struct npc
 	int time = 0;
 	int ischange = 0;
 }n[200];
-
+struct  skill
+{
+	int sc = 3;
+	int skillTime = 0;
+	npc sk[20];
+}s;
 int state = STATE_GAME;
 TCHAR c[3][100] = { L"开始游戏",L"关于游戏",L"退出游戏" };
 int i, lx = 150, flag = 0;
 int mpx = 400, mpy = 500;
 int mytype = 0;
 int gameTime = 0;
+int isSkill = 0;
+
+int collide1(Bullet b) {
+	if (sqrt((mpx - b.x) * (mpx - b.x) + (mpy - b.y) * (mpy - b.y)) < 20) {
+		return 1;
+	}
+	else
+		return 0;
+}
+int collide2(npc b) {
+	if (sqrt((mpx - b.x) * (mpx - b.x) + (mpy - b.y) * (mpy - b.y)) < 20) {
+		return 1;
+	}
+	else
+		return 0;
+}
+int collide3(Bullet b, npc n) {
+	if (sqrt((n.x - b.x) * (n.x - b.x) + (n.y - b.y) * (n.y - b.y)) < 20) {
+		return 1;
+	}
+	else
+		return 0;
+}
+int collide4(Bullet b, Bullet n) {
+	if (sqrt((n.x - b.x) * (n.x - b.x) + (n.y - b.y) * (n.y - b.y)) < 10) {
+		return 1;
+	}
+	else
+		return 0;
+}
+
 void createNPC(int x, int y, int vx, int vy, COLORREF c, int direction) {
 	int i;
 	for (i = 0; i < 200; i++) {
@@ -77,6 +113,32 @@ void moveBullet() {
 			if (b[i].x < -500 || b[i].x>1300 || b[i].y > 1100 || b[i].y < -500) {
 				b[i].islife = 0;
 			}
+			if (b[i].owner == NPC) {
+				if (collide1(b[i]) == 1) {
+					b[i].islife = 0;
+				}
+			}
+			if (b[i].owner == PLAYER) {
+				for (int j = 0; j < 200; j++) {
+					if (n[j].islife == 1) {
+						if (collide3(b[i], n[j]) == 1) {
+							b[i].islife = 0;
+							n[j].islife = 0;
+							break;
+						}
+					}
+				}
+				for (int k = 0; k < 1500; k++) {
+					if (b[k].islife == 1 && b[k].owner == NPC) {
+						if (collide4(b[i], b[k]) == 1) {
+							b[i].islife = 0;
+							b[k].islife = 0;
+							break;
+						}
+					}
+				}
+			}
+
 		}
 	}
 }
@@ -118,6 +180,67 @@ void drawPlane(int x, int y, COLORREF c, int direction) {
 		break;
 	}
 }
+
+
+void createSkill() {
+	s.sc--;
+	for (int i = 0; i < 20; i++) {
+		s.sk[i].islife = 1;
+		s.sk[i].x = mpx + cos(0.314 * i) * 40;
+		s.sk[i].y = mpy + sin(0.314 * i) * 40;
+		s.sk[i].c = YELLOW;
+		s.sk[i].direction = 0;
+	}
+}
+void drawSkill() {
+	int i = 0;
+	for (i = 0; i < 20; i++) {
+		if (s.sk[i].islife == 1) {
+			drawPlane(s.sk[i].x, s.sk[i].y, s.sk[i].c, s.sk[i].direction);
+		}
+	}
+}
+void moveSkill() {
+	int flag = 0;
+	s.skillTime++;
+	if (s.skillTime < 100) {
+		for (int i = 0; i < 20; i++) {
+			s.sk[i].x = mpx + cos(0.314 * i) * 40;
+			s.sk[i].y = mpy + sin(0.314 * i) * 40;
+		}
+	}
+	else if (s.skillTime == 100) {
+		for (int i = 0; i < 20; i++) {
+			s.sk[i].vx = cos(0.314 * i) * -20;
+			s.sk[i].vy = sin(0.314 * i) * -20;
+		}
+	}
+	else {
+		for (int i = 0; i < 20; i++) {
+			s.sk[i].x += s.sk[i].vx;
+			s.sk[i].y += s.sk[i].vy;
+		}
+	}
+
+	for (int i = 0; i < 20; i++) {
+		if (s.sk[i].x < 800 && s.sk[i].x>0 && s.sk[i].y > 0 && s.sk[i].y < 600) {
+			flag = 1;
+			break;
+		}
+	}
+	for (int i = 0; i < 20; i++) {
+		for (int j = 0; j < 1500; j++) {
+			if (b[j].islife == 1 && b[j].owner == NPC) {
+				if (collide3(b[j], s.sk[i]) == 1) {
+					b[j].islife = 0;
+				}
+			}
+		}
+	}
+
+	if (flag == 0)isSkill = 0;
+}
+
 void drawNPC() {
 	int i;
 	for (i = 0; i < 200; i++) {
@@ -139,6 +262,14 @@ void moveNPC() {
 				dd = atan2(n[i].y - mpy, n[i].x - mpx);
 				n[i].vx = cos(dd) * -15;
 				n[i].vy = sin(dd) * -15;
+				if (n[i].vy < 0)n[i].direction = 0;
+				else n[i].direction = 1;
+			}
+			if (collide2(n[i]) == 1) {
+				n[i].islife = 0;
+				n[i].ischange = 0;
+				n[i].time = 0;
+				break;
 			}
 			if (n[i].x < -300 || n[i].x>1100 || n[i].y < -300 || n[i].y>900) {
 				n[i].islife = 0;
@@ -198,6 +329,9 @@ void drawGame()
 
 		drawBullet();
 		drawNPC();
+		if (isSkill == 1) {
+			drawSkill();
+		}
 		switch (mytype)
 		{
 		case 0:
@@ -260,6 +394,13 @@ void ctrlGame()
 		if (GetAsyncKeyState('Q') & 0x8000) {
 			mytype = (mytype + 1) % 3;
 		}
+		if (GetAsyncKeyState('E') & 0x8000) {
+			if (isSkill == 0 && s.sc > 0) {
+				isSkill = 1;
+				s.skillTime = 0;
+				createSkill();
+			}
+		}
 		if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
 			switch (mytype)
 			{
@@ -282,7 +423,10 @@ void ctrlGame()
 				createBullet(mpx, mpy, -6, -9, PLAYER, RED);
 				break;
 			case 2:
-				createBullet(mpx, mpy, 0, -12, PLAYER, BROWN);
+				for (double i = 0; i < 20; i++) {
+					createBullet(mpx, mpy, -15 * cos(0.314 * i), -15 * sin(0.314 * i), PLAYER, RGB(250 - i * 8, 50, 50 + i * 10));
+				}
+				/*createBullet(mpx, mpy, 0, -12, PLAYER, BROWN);
 				createBullet(mpx, mpy, 4, -11, PLAYER, BROWN);
 				createBullet(mpx, mpy, -4, -11, PLAYER, BROWN);
 				createBullet(mpx, mpy, 8, -10, PLAYER, BROWN);
@@ -290,7 +434,7 @@ void ctrlGame()
 				createBullet(mpx, mpy, 2, 12, PLAYER, BROWN);
 				createBullet(mpx, mpy, -2, 12, PLAYER, BROWN);
 				createBullet(mpx, mpy, 4, 12, PLAYER, BROWN);
-				createBullet(mpx, mpy, -4, 12, PLAYER, BROWN);
+				createBullet(mpx, mpy, -4, 12, PLAYER, BROWN);*/
 				break;
 			}
 
@@ -326,10 +470,13 @@ void gameLogic()
 		}
 		moveNPC();
 		moveBullet();
-
+		if (isSkill == 1) {
+			moveSkill();
+		}
 		break;
 	}
 }
+
 int main()
 {
 
@@ -346,7 +493,7 @@ int main()
 		gameLogic();
 
 		FlushBatchDraw();
-		Sleep(50);
+		Sleep(40);
 	}
 	EndBatchDraw();
 	closegraph();
