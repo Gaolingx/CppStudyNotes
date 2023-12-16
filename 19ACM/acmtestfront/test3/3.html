@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试3</title>
+    <style>
+        body,
+        dl,
+        dt,
+        dd,
+        p {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Tahoma;
+            font-size: 12px;
+        }
+
+        label,
+        input,
+        a {
+            vertical-align: middle;
+        }
+
+        label {
+            padding: 0 10px 0 5px;
+        }
+
+        a {
+            color: #09f;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: red;
+        }
+
+        dl {
+            width: 120px;
+            margin: 10px auto;
+            padding: 10px 5px;
+            border: 1px solid #666;
+            border-radius: 5px;
+            background: #fafafa;
+        }
+
+        dt {
+            padding-bottom: 10px;
+            border-bottom: 1px solid #666;
+        }
+
+        dt label {
+            font-weight: 700;
+        }
+
+        p {
+            text-align: center;
+        }
+
+        dd>p {
+            margin-top: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+    <dl>
+        <dt>
+            <input type="checkbox" id="checkAll" />
+            <label>全选</label>
+        </dt>
+        <dd>
+            <p>
+                <input type="checkbox" name="item" value="one" />
+                <label>one</label>
+            </p>
+            <p>
+                <input type="checkbox" name="item" value="two" />
+                <label>two</label>
+            </p>
+            <p>
+                <input type="checkbox" name="item" value="three" />
+                <label>three</label>
+            </p>
+            <p>
+                <input type="checkbox" name="item" value="four" />
+                <label>four</label>
+            </p>
+            <p>
+                <input type="checkbox" name="item" value="five" />
+                <label>five</label>
+            </p>
+            <p>
+                <input type="checkbox" name="item" value="six" />
+                <label>six</label>
+            </p>
+            <p>
+                <input type="checkbox" name="item" value="seven" />
+                <label>seven</label>
+            </p>
+            <p>
+                <input type="checkbox" name="item" value="eight" />
+                <label>eight</label>
+            </p>
+            <p>
+                <input type="checkbox" name="item" value="nine" />
+                <label>nine</label>
+            </p>
+            <p>
+                <input type="checkbox" name="item" value="ten" />
+                <label>ten</label>
+            </p>
+        </dd>
+    </dl>
+</body>
+<script>
+    var checkAll = document.getElementById("checkAll");
+    var checks = document.querySelectorAll("dd > p > input");
+    var dd = document.querySelector("dd");
+    var checkValues = [];
+
+
+</script>
+
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试5</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            list-style-type: none;
+        }
+
+        .tab {
+            width: 978px;
+            margin: 100px auto;
+        }
+
+        .tab_list {
+            height: 39px;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+
+        .tab_list li {
+            float: left;
+            height: 39px;
+            line-height: 39px;
+            padding: 0 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .tab_list .current {
+            background-color: #c81623;
+            color: #fff;
+        }
+
+        .item_info {
+            padding: 20px 0 0 20px;
+        }
+
+        .item {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="tab">
+        <div class="tab_list">
+            <ul>
+                <li class="current">商品介绍</li>
+                <li>规格与包装</li>
+                <li>售后保障</li>
+                <li>商品评价（50000）</li>
+                <li>手机社区</li>
+            </ul>
+        </div>
+        <div class="tab_con">
+            <div class="item" style="display: block;">
+                商品介绍模块内容
+            </div>
+            <div class="item">
+                规格与包装模块内容
+            </div>
+            <div class="item">
+                售后保障模块内容
+            </div>
+            <div class="item">
+                商品评价（50000）模块内容
+            </div>
+            <div class="item">
+                手机社区模块内容
+            </div>
+
+        </div>
+    </div>
+</body>
+<script>
+    var tab_ls = document.querySelector('.tab_list');
+    var lis = tab_ls.querySelectorAll('li');
+    var divs = document.getElementsByClassName('item');
+    //通过循环绑定点击事件
+    for (let i = 0; i < lis.length; i++) {
+        //第二部分：  给每个li标签设置索引号方便对应Div
+        lis[i].setAttribute('index', i);
+
+        //第一部分：点击某个选项卡改变颜色 也就是这个class类 ，其他的清除样式
+        lis[i].onclick = function () {
+            for (let i = 0; i < lis.length; i++) {
+                //先清除所有的样式
+                lis[i].className = '';
+            }
+            //在赋值正在点击的选项卡
+            this.className = 'current';
+
+            //第二部分：获取自定义的索引号
+            var index = this.getAttribute('index');
+            //console.log(index);
+            //同样的思想先清除所有人的样式
+            for (let i = 0; i < divs.length; i++) {
+                divs[i].style.display = 'none';
+            }
+            //在给点击的样式根据Div的索引对应自定义的 显示内容
+            divs[index].style.display = 'block';
+        }
+    }
+
+</script>
+
+</html>

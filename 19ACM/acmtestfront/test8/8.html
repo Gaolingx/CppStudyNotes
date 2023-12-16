@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试8</title>
+    <style>
+        table {
+            width: 900px;
+            border-collapse: collapse;
+            margin: 0 auto;
+        }
+
+        th {
+            border-top: 3px solid #a7cbff;
+            background: #e2f2ff;
+            text-align: center;
+        }
+
+        td {
+            height: 80px;
+            border: 1px solid #CADEFF;
+            text-align: center;
+            color: rgb(167, 159, 159);
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background-color: #e2f2ff;
+        }
+
+        .count-input {
+            width: 50px;
+            text-align: center;
+            height: 21px;
+
+
+        }
+
+        #foot td {
+            height: 30px;
+        }
+
+        .reduce {
+            position: relative;
+            left: 5px;
+            bottom: 2px;
+        }
+
+        .add {
+            position: relative;
+            right: 5px;
+            bottom: 2px;
+        }
+
+        .reduce,
+        .add {
+            display: inline-block;
+            width: 20px;
+            height: 25px;
+            background-color: #ccc;
+            color: white;
+            cursor: pointer;
+        }
+
+        span {
+            cursor: pointer;
+        }
+
+        #allPrice {
+            display: inline-block;
+            width: 50px;
+        }
+
+        tfoot tr td {
+            text-align: left;
+        }
+    </style>
+
+</head>
+
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="ckAll" onclick="checkAll()">全选</th>
+                <th>商品</th>
+                <th>单价</th>
+                <th>数量</th>
+                <th>小计</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="inline">
+                <td><input type="checkbox" name="ck" onclick="check()"></td>
+                <td>Casio/卡西欧 EX-TR350</td>
+                <td>5999.88</td>
+                <td>
+                    <span class="reduce" onclick="reduceCount(this)">-</span>
+                    <input type="text" value="1" class="count-input">
+                    <span class="add" onclick="addCount(this)">+</span>
+                </td>
+                <td>5999.88</td>
+                <td>
+                    <span class="delete" onclick="del(this)">删除</span>
+                </td>
+            </tr>
+            <tr class="inline">
+                <td><input type="checkbox" name="ck" onclick="check()"></td>
+                <td>Canon/佳能 PowerShot SX50 HS</td>
+                <td>3888.50</td>
+                <td>
+                    <span class="reduce" onclick="reduceCount(this)">-</span>
+                    <input type="text" value="1" class="count-input">
+                    <span class="add" onclick="addCount(this)">+</span>
+                </td>
+                <td>3888.50</td>
+                <td>
+                    <span class="delete" onclick="del(this)">删除</span>
+                </td>
+            </tr>
+            <tr class="inline">
+                <td><input type="checkbox" name="ck" onclick="check()"></td>
+                <td>Sony/索尼 DSC-WX300</td>
+                <td>1428.50</td>
+                <td>
+                    <span class="reduce" onclick="reduceCount(this)">-</span>
+                    <input type="text" value="1" class="count-input">
+                    <span class="add" onclick="addCount(this)">+</span>
+                </td>
+                <td>1428.50</td>
+                <td>
+                    <span class="delete" onclick="del(this)">删除</span>
+                </td>
+            </tr>
+            <tr class="inline">
+                <td><input type="checkbox" name="ck" onclick="check()"></td>
+                <td>Fujifilm/富士 instax mini 25</td>
+                <td>640.60</td>
+                <td>
+                    <span class="reduce" onclick="reduceCount(this)">-</span>
+                    <input type="text" value="1" class="count-input">
+                    <span class="add" onclick="addCount(this)">+</span>
+                </td>
+                <td>640.60</td>
+                <td>
+                    <span class="delete" onclick="del(this)">删除</span>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot id="foot">
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>总数：<span id="allCount"></span></td>
+                <td>总价：<span id="allPrice"></span></td>
+            </tr>
+        </tfoot>
+    </table>
+
+</body>
+<script>
+</script>
+
+
+</html>
