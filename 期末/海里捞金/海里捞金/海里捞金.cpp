@@ -1,6 +1,7 @@
 ﻿// 海里捞金.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
 //
 
+#include <stdio.h>
 #include <graphics.h>
 #include "stdlib.h"
 #include "math.h"
@@ -14,8 +15,9 @@
 #define  STATE_LA 2
 #define  N 6
 
+char gameLevel;
 TCHAR uic[3][100] = { L"启动！",L"关于游戏",L"退出游戏" };
-int uii, uistate = STATE_GAME, uiflag = 0;
+int uii, uistate = STATE_MENU, uiflag = 0;
 int uilx = 150;
 
 int lx = 400, ly = 200;
@@ -74,6 +76,12 @@ int collide(Item i) {
 	}
 }
 
+void levelSelect()
+{
+	//选择难度
+	printf("请选择难度级别（输入数字1-5然后Enter确定）\n");
+	scanf_s("%c", &gameLevel);
+}
 void drawGame() {
 	if (STATE_GAME)
 	{
@@ -237,14 +245,37 @@ void gameLogic() {
 					}
 
 				}
-
+				//改回摆的状态
 				state = STATE_BAI;
+
 				int temp = 0;
+				//既然type都不等于这些值，那说明没有抓到，需要根据难度减分
 				if (ii[temp].type != 0 || 1 || 2 || 3 || 4)
 				{
-					//既然type都不等于这些值，那说明没有抓到，需要根据难度减分
-					scoreCalculate(100, 0, false);
+					switch (gameLevel)
+					{
+					case '1':
+						scoreCalculate(10, 0, false);
+						break;
+					case '2':
+						scoreCalculate(30, 0, false);
+						break;
+					case '3':
+						scoreCalculate(50, 0, false);
+						break;
+					case '4':
+						scoreCalculate(100, 0, false);
+						break;
+					case '5':
+						scoreCalculate(150, 0, false);
+						break;
+					default:
+						scoreCalculate(10, 0, false);
+						break;
+					}
+					
 				}
+
 				lineLength = 100;
 				lineSpeed = -12;
 			}
@@ -256,6 +287,7 @@ void gameLogic() {
 }
 void drawGameUI()
 {
+
 	setfillcolor(BLACK);
 	fillrectangle(0, 0, 800, 600);
 
@@ -305,8 +337,10 @@ void drawGameUI()
 }
 int main()
 {
-	initgraph(800, 600);
+	
 	loadRes();
+	levelSelect();
+	initgraph(800, 600);
 	BeginBatchDraw();
 	while (1)
 	{
