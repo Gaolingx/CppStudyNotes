@@ -83,7 +83,7 @@ void levelSelect()
 	scanf_s("%c", &gameLevel);
 }
 void drawGame() {
-	if (STATE_GAME)
+	if (uistate == STATE_GAME)
 	{
 		//绘制背景
 		putimage(0, 100, &bk, SRCCOPY);
@@ -112,7 +112,7 @@ void drawGame() {
 	}
 }
 void ctrlGame() {
-	if (STATE_MENU || STATE_ABOUT)
+	if (uistate == STATE_MENU || STATE_ABOUT)
 	{
 		//UI控制
 		switch (uistate)
@@ -152,7 +152,7 @@ void ctrlGame() {
 		}
 	}
 	//游戏控制
-	if (STATE_GAME)
+	if (uistate == STATE_GAME)
 	{
 		if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 		{
@@ -174,7 +174,7 @@ void scoreCalculate(int moneyNum, int randNum, bool addMoney)
 	}
 }
 void gameLogic() {
-	if (STATE_GAME)
+	if (uistate == STATE_GAME)
 	{
 		lx = 400 + sin(d) * lineLength;
 		ly = 100 + cos(d) * lineLength;
