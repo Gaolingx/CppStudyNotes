@@ -27,6 +27,7 @@ int lineLength = 100;
 int lineSpeed = -10;
 int state = STATE_BAI;
 TCHAR sc[20];
+TCHAR level[20];
 int money = 0;
 struct Item
 {
@@ -105,10 +106,14 @@ void drawGame() {
 			}
 		}
 
-		//绘制UI
+		//绘制HUD
 		settextstyle(50, 0, L"黑体");
 		wsprintf(sc, L"金币：%d", money);
 		outtextxy(50, 30, sc);
+
+		settextstyle(50, 0, L"黑体");
+		wsprintf(level, L"难度：%c", gameLevel);
+		outtextxy(550, 30, level);
 	}
 }
 void ctrlGame() {
