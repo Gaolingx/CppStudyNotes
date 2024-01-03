@@ -87,21 +87,43 @@ void levelSelect()
 	printf("请选择难度级别（输入数字1-5然后Enter确定）\n");
 	scanf_s("%c", &gameLevel);
 }
+
+void drawBG(int bgX, int bgY)
+{
+	putimage(bgX, bgY, &bk, SRCCOPY);
+}
+
+void drawPlayer(int playerX, int playerY)
+{
+	putimage(playerX, playerY, &player, SRCINVERT);
+	putimage(playerX, playerY, &player_a, SRCAND);
+	putimage(playerX, playerY, &player, SRCINVERT);
+}
+
+void drawLine(COLORREF lineColor, int lineInitX, int lineInitY, int lineDstX, int lineDstY)
+{
+	setcolor(lineColor);
+	line(lineInitX, lineInitY, lineDstX, lineDstY);
+}
+
+void drawHook(int hookX, int hookY)
+{
+	putimage(hookX, hookY, &hook, SRCINVERT);
+	putimage(hookX, hookY, &hook_a, SRCAND);
+	putimage(hookX, hookY, &hook, SRCINVERT);
+}
+
 void drawGame() {
 	if (uistate == STATE_GAME)
 	{
 		//绘制背景
-		putimage(0, 100, &bk, SRCCOPY);
+		drawBG(0, 100);
 
 		//绘制玩家
-		putimage(350, 0, &player, SRCINVERT);
-		putimage(350, 0, &player_a, SRCAND);
-		putimage(350, 0, &player, SRCINVERT);
+		drawPlayer(350, 0);
 
-		//绘制钩子
-		setcolor(YELLOW);
-		line(400, 100, lx, ly);
-		//TODO 加上钩子图片
+		//绘制绳子
+		drawLine(YELLOW, 400, 100, lx, ly);
 
 		//绘制宝石
 		for (int i = 0; i < N; i++) {
@@ -113,6 +135,7 @@ void drawGame() {
 		}
 
 		//绘制HUD
+		
 		settextstyle(50, 0, L"黑体");
 		wsprintf(sc, L"金币：%d", money);
 		outtextxy(50, 30, sc);
@@ -120,8 +143,10 @@ void drawGame() {
 		settextstyle(50, 0, L"黑体");
 		wsprintf(level, L"难度：%c", gameLevel);
 		outtextxy(550, 30, level);
+		
 	}
 }
+
 void ctrlGame() {
 	if (uistate == STATE_MENU || STATE_ABOUT)
 	{
@@ -173,6 +198,7 @@ void ctrlGame() {
 	}
 
 }
+
 void scoreCalculate(int moneyNum, int randNum, bool addMoney)
 {
 	if (addMoney == true)
@@ -184,12 +210,7 @@ void scoreCalculate(int moneyNum, int randNum, bool addMoney)
 		money -= moneyNum;
 	}
 }
-void drawHook(int hookX, int hookY)
-{
-	putimage(hookX, hookY, &hook, SRCINVERT);
-	putimage(hookX, hookY, &hook_a, SRCAND);
-	putimage(hookX, hookY, &hook, SRCINVERT);
-}
+
 void gameLogic() {
 	if (uistate == STATE_GAME)
 	{
@@ -305,6 +326,7 @@ void gameLogic() {
 		}
 	}
 }
+
 void drawGameUI()
 {
 
@@ -355,6 +377,7 @@ void drawGameUI()
 		break;
 	}
 }
+
 int main()
 {
 	
