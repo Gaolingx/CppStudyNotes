@@ -154,15 +154,15 @@ void ctrlGame() {
 	}
 
 }
-void scoreCalculate(int Money, int randNum, bool addMoney)
+void scoreCalculate(int moneyNum, int randNum, bool addMoney)
 {
 	if (addMoney == true)
 	{
-		money += (Money + rand() % randNum);
+		money += (moneyNum + rand() % randNum);
 	}
 	else
 	{
-		money -= Money;
+		money -= moneyNum;
 	}
 }
 void gameLogic() {
@@ -239,6 +239,12 @@ void gameLogic() {
 				}
 
 				state = STATE_BAI;
+				int temp = 0;
+				if (ii[temp].type != 0 || 1 || 2 || 3 || 4)
+				{
+					//既然type都不等于这些值，那说明没有抓到，需要根据难度减分
+					scoreCalculate(100, 0, false);
+				}
 				lineLength = 100;
 				lineSpeed = -12;
 			}
