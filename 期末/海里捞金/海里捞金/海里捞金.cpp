@@ -47,6 +47,8 @@ struct Item
 IMAGE bk;
 IMAGE player;
 IMAGE player_a;
+IMAGE hook;
+IMAGE hook_a;
 IMAGE g[5];
 IMAGE gbw[5];
 
@@ -55,6 +57,8 @@ void loadRes()
 	loadimage(&bk, L"量子之海background.jpg", 800, 500);
 	loadimage(&player, L"Tex_player_希儿_rgba.png", 100, 100);
 	loadimage(&player_a, L"Tex_player_希儿_a.png", 100, 100);
+	loadimage(&hook, L"钩子(hook)_rgba.png", 28.7, 50);
+	loadimage(&hook_a, L"钩子(hook)_a.png", 28.7, 50);
 	loadimage(&g[0], L"s10.png", 100, 100);
 	loadimage(&gbw[0], L"s10a.png", 100, 100);
 	loadimage(&g[1], L"s9.png", 60, 60);
@@ -90,7 +94,9 @@ void drawGame() {
 		putimage(0, 100, &bk, SRCCOPY);
 
 		//绘制玩家
-		putimage(350, 0, &player, SRCCOPY);
+		putimage(350, 0, &player, SRCINVERT);
+		putimage(350, 0, &player_a, SRCAND);
+		putimage(350, 0, &player, SRCINVERT);
 
 		//绘制钩子
 		setcolor(YELLOW);
@@ -178,11 +184,20 @@ void scoreCalculate(int moneyNum, int randNum, bool addMoney)
 		money -= moneyNum;
 	}
 }
+void drawHook(int hookX, int hookY)
+{
+	putimage(hookX, hookY, &hook, SRCINVERT);
+	putimage(hookX, hookY, &hook_a, SRCAND);
+	putimage(hookX, hookY, &hook, SRCINVERT);
+}
 void gameLogic() {
 	if (uistate == STATE_GAME)
 	{
 		lx = 400 + sin(d) * lineLength;
 		ly = 100 + cos(d) * lineLength;
+		//要做延迟补偿
+		drawHook(lx - 7, ly - 7);
+
 		switch (state)
 		{
 		case STATE_BAI:
