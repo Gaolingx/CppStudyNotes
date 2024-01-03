@@ -15,7 +15,7 @@
 #define  N 6
 
 TCHAR uic[3][100] = { L"启动！",L"关于游戏",L"退出游戏" };
-int uii, uistate = STATE_MENU, uiflag = 0;
+int uii, uistate = STATE_GAME, uiflag = 0;
 int uilx = 150;
 
 int lx = 400, ly = 200;
@@ -43,12 +43,15 @@ struct Item
 
 IMAGE bk;
 IMAGE player;
+IMAGE player_a;
 IMAGE g[5];
 IMAGE gbw[5];
 
 void loadRes()
 {
 	loadimage(&bk, L"量子之海background.jpg", 800, 500);
+	loadimage(&player, L"Tex_player_希儿_rgba.png", 100, 100);
+	loadimage(&player_a, L"Tex_player_希儿_a.png", 100, 100);
 	loadimage(&g[0], L"s10.png", 100, 100);
 	loadimage(&gbw[0], L"s10a.png", 100, 100);
 	loadimage(&g[1], L"s9.png", 60, 60);
@@ -72,137 +75,177 @@ int collide(Item i) {
 }
 
 void drawGame() {
-	putimage(0, 100, &bk, SRCCOPY);
-	setcolor(YELLOW);
-	line(400, 100, lx, ly);
-	for (int i = 0; i < N; i++) {
-		if (ii[i].islife == 1) {
-			putimage(ii[i].x - ii[i].r, ii[i].y - ii[i].r, &g[ii[i].type], SRCINVERT);
-			putimage(ii[i].x - ii[i].r, ii[i].y - ii[i].r, &gbw[ii[i].type], SRCAND);
-			putimage(ii[i].x - ii[i].r, ii[i].y - ii[i].r, &g[ii[i].type], SRCINVERT);
-		}
-	}
-	settextstyle(50, 0, L"黑体");
-	wsprintf(sc, L"金币：%d", money);
-	outtextxy(50, 30, sc);
-}
-void ctrlGame() {
-	//UI控制
-	switch (uistate)
+	if (STATE_GAME)
 	{
-	case STATE_MENU:
-		if (GetAsyncKeyState(VK_UP) & 0x8000) {
-			uiflag--;
-			if (uiflag == -1)
-			{
-				uiflag = 2;
+		//绘制背景
+		putimage(0, 100, &bk, SRCCOPY);
+
+		//绘制玩家
+		putimage(350, 0, &player, SRCCOPY);
+
+		//绘制钩子
+		setcolor(YELLOW);
+		line(400, 100, lx, ly);
+		//TODO 加上钩子图片
+
+		//绘制宝石
+		for (int i = 0; i < N; i++) {
+			if (ii[i].islife == 1) {
+				putimage(ii[i].x - ii[i].r, ii[i].y - ii[i].r, &g[ii[i].type], SRCINVERT);
+				putimage(ii[i].x - ii[i].r, ii[i].y - ii[i].r, &gbw[ii[i].type], SRCAND);
+				putimage(ii[i].x - ii[i].r, ii[i].y - ii[i].r, &g[ii[i].type], SRCINVERT);
 			}
 		}
-		if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
-			uiflag = (uiflag + 1) % 3;
+
+		//绘制UI
+		settextstyle(50, 0, L"黑体");
+		wsprintf(sc, L"金币：%d", money);
+		outtextxy(50, 30, sc);
+	}
+}
+void ctrlGame() {
+	if (STATE_MENU || STATE_ABOUT)
+	{
+		//UI控制
+		switch (uistate)
+		{
+		case STATE_MENU:
+			if (GetAsyncKeyState(VK_UP) & 0x8000) {
+				uiflag--;
+				if (uiflag == -1)
+				{
+					uiflag = 2;
+				}
+			}
+			if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
+				uiflag = (uiflag + 1) % 3;
+			}
+			if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
+				if (uiflag == 0)uistate = STATE_LOADING;
+				else if (uiflag == 1)uistate = STATE_ABOUT;
+				else exit(0);
+			}
+			break;
+		case STATE_ABOUT:
+			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
+				uistate = STATE_MENU;
+			}
+			break;
+		case STATE_LOADING:
+			setcolor(WHITE);
+			settextstyle(55, 0, L"宋体");
+			outtextxy(110, 100, L"原 来 你 也 玩 原 神");
+			setcolor(WHITE);
+			rectangle(150, 450, 650, 480);
+			setcolor(WHITE);
+			setfillcolor(WHITE);
+			fillrectangle(151, 451, uilx, 479);
+			break;
 		}
-		if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
-			if (uiflag == 0)uistate = STATE_LOADING;
-			else if (uiflag == 1)uistate = STATE_ABOUT;
-			else exit(0);
-		}
-		break;
-	case STATE_ABOUT:
-		if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
-			uistate = STATE_MENU;
-		}
-		break;
-	case STATE_LOADING:
-		setcolor(WHITE);
-		settextstyle(55, 0, L"宋体");
-		outtextxy(110, 100, L"原 来 你 也 玩 原 神");
-		setcolor(WHITE);
-		rectangle(150, 450, 650, 480);
-		setcolor(WHITE);
-		setfillcolor(WHITE);
-		fillrectangle(151, 451, uilx, 479);
-		break;
 	}
 	//游戏控制
-	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+	if (STATE_GAME)
 	{
-		if (state == STATE_BAI)
-			state = STATE_SHEN;
+		if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+		{
+			if (state == STATE_BAI)
+				state = STATE_SHEN;
+		}
+	}
+
+}
+void scoreCalculate(int Money, int randNum, bool addMoney)
+{
+	if (addMoney == true)
+	{
+		money += (Money + rand() % randNum);
+	}
+	else
+	{
+		money -= Money;
 	}
 }
 void gameLogic() {
-	lx = 400 + sin(d) * lineLength;
-	ly = 100 + cos(d) * lineLength;
-	switch (state)
+	if (STATE_GAME)
 	{
-	case STATE_BAI:
-		d += vd;
-		if (d > 1.4 || d <= -1.4)vd *= -1;
-		break;
-	case STATE_SHEN:
-		lineLength += 5;
-		for (int i = 0; i < N; i++) {
-			if (ii[i].islife == 1) {
-				if (collide(ii[i])) {
-					ii[i].isdrag = 1;
-					state = STATE_LA;
-					lineSpeed = -1 * (8 - ii[i].r / 10);
-					break;
-				}
-			}
-		}
-
-
-		if (lineLength > 500) {
-			state = STATE_LA;
-		}
-		break;
-	case STATE_LA:
-		lineLength += lineSpeed;
-		for (int i = 0; i < N; i++) {
-			if (ii[i].isdrag == 1) {
-				ii[i].x = lx;
-				ii[i].y = ly;
-				break;
-			}
-		}
-		if (lineLength <= 100) {
+		lx = 400 + sin(d) * lineLength;
+		ly = 100 + cos(d) * lineLength;
+		switch (state)
+		{
+		case STATE_BAI:
+			d += vd;
+			if (d > 1.4 || d <= -1.4)vd *= -1;
+			break;
+		case STATE_SHEN:
+			lineLength += 5;
 			for (int i = 0; i < N; i++) {
-				if (ii[i].isdrag == 1) {
-					ii[i].islife = 0;
-					ii[i].isdrag = 0;
-					switch (ii[i].type)
-					{
-					case 0:
-						money += (500 + rand() % 200);
-						break;
-					case 1:
-						money += (250 + rand() % 100);
-						break;
-					case 2:
-						money += (100 + rand() % 80);
-						break;
-					case 3:
-						money += (20 + rand() % 50);
-						break;
-					case 4:
-						money += (850 + rand() % 150);
-						break;
-					default:
+				if (ii[i].islife == 1) {
+					if (collide(ii[i])) {
+						ii[i].isdrag = 1;
+						state = STATE_LA;
+						lineSpeed = -1 * (8 - ii[i].r / 10);
 						break;
 					}
-					break;
 				}
-
 			}
 
-			state = STATE_BAI;
-			lineLength = 100;
-			lineSpeed = -12;
+
+			if (lineLength > 500) {
+				state = STATE_LA;
+			}
+			break;
+		case STATE_LA:
+			lineLength += lineSpeed;
+			for (int i = 0; i < N; i++) {
+				if (ii[i].isdrag == 1) {
+					ii[i].x = lx;
+					ii[i].y = ly;
+					break;
+				}
+			}
+			if (lineLength <= 100) {
+				for (int i = 0; i < N; i++) {
+					if (ii[i].isdrag == 1) {
+						ii[i].islife = 0;
+						ii[i].isdrag = 0;
+						switch (ii[i].type)
+						{
+						case 0:
+							scoreCalculate(500, 200, true);
+							//money += (500 + rand() % 200);
+							break;
+						case 1:
+							scoreCalculate(250, 100, true);
+							//money += (250 + rand() % 100);
+							break;
+						case 2:
+							scoreCalculate(100, 80, true);
+							//money += (100 + rand() % 80);
+							break;
+						case 3:
+							scoreCalculate(20, 50, true);
+							//money += (20 + rand() % 50);
+							break;
+						case 4:
+							scoreCalculate(850, 150, true);
+							//money += (850 + rand() % 150);
+							break;
+						default:
+							break;
+						}
+						break;
+					}
+
+				}
+
+				state = STATE_BAI;
+				lineLength = 100;
+				lineSpeed = -12;
+			}
+			break;
+		default:
+			break;
 		}
-		break;
-	default:
-		break;
 	}
 }
 void drawGameUI()
@@ -216,6 +259,7 @@ void drawGameUI()
 		setcolor(RGB(rand() % 256, rand() % 256, rand() % 256));
 		settextstyle(55, 0, L"宋体");
 		outtextxy(110, 100, L"海 里 捞 金 极 速 版");
+		setcolor(GREEN);
 		settextstyle(20, 0, L"宋体");
 		outtextxy(110, 200, L"冷狐无伤版 v1.0.11");
 		settextstyle(32, 0, L"宋体");
@@ -268,6 +312,8 @@ int main()
 	}
 	EndBatchDraw();
 	closegraph();
+
+	return 0;
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
