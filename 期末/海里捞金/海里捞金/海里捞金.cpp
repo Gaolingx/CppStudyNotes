@@ -17,7 +17,9 @@
 
 char gameLevel;
 TCHAR uic[3][100] = { L"启动！",L"关于游戏",L"退出游戏" };
-int uii, uistate = STATE_MENU, uiflag = 0;
+int uistate = STATE_MENU;
+//int uistate = STATE_GAME;
+int uii, uiflag = 0;
 int uilx = 150;
 
 int lx = 400, ly = 200;
@@ -59,16 +61,16 @@ void loadRes()
 	loadimage(&player_a, L"Tex_player_希儿_a.png", 100, 100);
 	loadimage(&hook, L"钩子(hook)_rgba.png", 28.7, 50);
 	loadimage(&hook_a, L"钩子(hook)_a.png", 28.7, 50);
-	loadimage(&g[0], L"s10.png", 100, 100);
-	loadimage(&gbw[0], L"s10a.png", 100, 100);
-	loadimage(&g[1], L"s9.png", 60, 60);
-	loadimage(&gbw[1], L"s9a.png", 60, 60);
-	loadimage(&g[2], L"s15.png", 100, 100);
-	loadimage(&gbw[2], L"s15a.png", 100, 100);
-	loadimage(&g[3], L"s13.png", 60, 60);
-	loadimage(&gbw[3], L"s14a.png", 60, 60);
-	loadimage(&g[4], L"钻石.png", 40, 40);
-	loadimage(&gbw[4], L"钻石a.png", 40, 40);
+	loadimage(&g[0], L"水晶_rgb.png", 60, 60);
+	loadimage(&gbw[0], L"水晶_a.png", 60, 60);
+	loadimage(&g[1], L"星石_rgb.png", 60, 60);
+	loadimage(&gbw[1], L"星石_a.png", 60, 60);
+	loadimage(&g[2], L"金币s_rgb.png", 80, 80);
+	loadimage(&gbw[2], L"金币s_a.png", 80, 80);
+	loadimage(&g[3], L"金币_rgb.png", 60, 60);
+	loadimage(&gbw[3], L"金币_a.png", 60, 60);
+	loadimage(&g[4], L"水晶s_rgb.png", 40, 40);
+	loadimage(&gbw[4], L"水晶s_a.png", 40, 40);
 }
 
 int collide(Item i) {
@@ -356,6 +358,9 @@ void drawGameUI()
 		outtextxy(50, 50, L"你说的对，但是《海里捞金》是由高羚翔自主研发的一款全新开放");
 		outtextxy(50, 75, L"世界寻宝游戏。游戏发生在一个被称作「量子之海」的幻想世界，");
 		outtextxy(50, 100, L"你将扮演一位名为「矿工」的神秘角色，收集神秘之物。");
+
+		settextstyle(25, 0, L"宋体");
+		outtextxy(50, 250, L"获胜条件：1、分数不为负数  2、采集完所有的矿物");
 		settextstyle(15, 0, L"宋体");
 		outtextxy(300, 450, L"由软件游戏3231班高羚翔制作，版权所有2024 , 保留所有权利。");
 		break;
