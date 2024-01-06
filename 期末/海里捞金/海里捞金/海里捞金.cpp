@@ -6,10 +6,11 @@
 #include "stdlib.h"
 #include "math.h"
 
-#define STATE_MENU 10
-#define STATE_ABOUT 11
-#define STATE_LOADING 12
-#define STATE_GAME 13
+#define STATE_UI_MENU 10
+#define STATE_UI_ABOUT 11
+#define STATE_UI_LOADING 12
+#define STATE_UI_GAME 13
+#define STATE_UI_WIN 14
 #define  STATE_BAI 0
 #define  STATE_SHEN 1
 #define  STATE_LA 2
@@ -17,8 +18,8 @@
 
 char gameLevel;
 TCHAR uic[3][100] = { L"启动！",L"关于游戏",L"退出游戏" };
-int uistate = STATE_MENU;
-//int uistate = STATE_GAME;
+//int uistate = STATE_UI_WIN;
+int uistate = STATE_UI_MENU;
 int uii, uiflag = 0;
 int uilx = 150;
 
@@ -90,6 +91,11 @@ void levelSelect()
 	scanf_s("%c", &gameLevel);
 }
 
+void GameInit()
+{
+	money = 0;
+	state = STATE_BAI;
+}
 void drawBG(int bgX, int bgY)
 {
 	putimage(bgX, bgY, &bk, SRCCOPY);
@@ -116,7 +122,7 @@ void drawHook(int hookX, int hookY)
 }
 
 void drawGame() {
-	if (uistate == STATE_GAME)
+	if (uistate == STATE_UI_GAME)
 	{
 		//绘制背景
 		drawBG(0, 100);
@@ -149,13 +155,21 @@ void drawGame() {
 	}
 }
 
+void ExitGame()
+{
+	EndBatchDraw();
+	closegraph();
+
+	exit(0);
+}
+
 void ctrlGame() {
-	if (uistate == STATE_MENU || STATE_ABOUT)
+	if (uistate == STATE_UI_MENU || STATE_UI_ABOUT)
 	{
 		//UI控制
 		switch (uistate)
 		{
-		case STATE_MENU:
+		case STATE_UI_MENU:
 			if (GetAsyncKeyState(VK_UP) & 0x8000) {
 				uiflag--;
 				if (uiflag == -1)
@@ -167,36 +181,47 @@ void ctrlGame() {
 				uiflag = (uiflag + 1) % 3;
 			}
 			if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
-				if (uiflag == 0)uistate = STATE_LOADING;
-				else if (uiflag == 1)uistate = STATE_ABOUT;
-				else exit(0);
+				if (uiflag == 0)
+				{
+					uistate = STATE_UI_LOADING;
+				}
+				else if (uiflag == 1)
+				{
+					uistate = STATE_UI_ABOUT;
+				}
+				else
+				{
+					ExitGame();
+				}
 			}
 			break;
-		case STATE_ABOUT:
+		case STATE_UI_ABOUT:
 			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
-				uistate = STATE_MENU;
+				uistate = STATE_UI_MENU;
 			}
 			break;
-		case STATE_LOADING:
-			setcolor(WHITE);
-			settextstyle(55, 0, L"宋体");
-			outtextxy(110, 100, L"原 来 你 也 玩 原 神");
-			setcolor(WHITE);
-			rectangle(150, 450, 650, 480);
-			setcolor(WHITE);
-			setfillcolor(WHITE);
-			fillrectangle(151, 451, uilx, 479);
+		case STATE_UI_GAME:
+			if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+			{
+				if (state == STATE_BAI)
+				{
+					state = STATE_SHEN;
+				}
+					
+			}
+		case STATE_UI_WIN:
+			if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+			{
+				uistate = STATE_UI_GAME;
+			}
+			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
+			{
+				ExitGame();
+			}
+		default:
 			break;
 		}
-	}
-	//游戏控制
-	if (uistate == STATE_GAME)
-	{
-		if (GetAsyncKeyState(VK_SPACE) & 0x8000)
-		{
-			if (state == STATE_BAI)
-				state = STATE_SHEN;
-		}
+
 	}
 
 }
@@ -214,7 +239,7 @@ void scoreCalculate(int moneyNum, int randNum, bool addMoney)
 }
 
 void gameLogic() {
-	if (uistate == STATE_GAME)
+	if (uistate == STATE_UI_GAME)
 	{
 		lx = 400 + sin(d) * lineLength;
 		ly = 100 + cos(d) * lineLength;
@@ -337,7 +362,7 @@ void drawGameUI()
 
 	switch (uistate)
 	{
-	case STATE_MENU:
+	case STATE_UI_MENU:
 		setcolor(RGB(rand() % 256, rand() % 256, rand() % 256));
 		settextstyle(55, 0, L"宋体");
 		outtextxy(110, 100, L"海 里 捞 金 极 速 版");
@@ -352,7 +377,7 @@ void drawGameUI()
 		fillrectangle(260, 255 + uiflag * 80, 290, 285 + uiflag * 80);
 		break;
 
-	case STATE_ABOUT:
+	case STATE_UI_ABOUT:
 		setcolor(WHITE);
 		settextstyle(25, 0, L"宋体");
 		outtextxy(50, 50, L"你说的对，但是《海里捞金》是由高羚翔自主研发的一款全新开放");
@@ -364,19 +389,50 @@ void drawGameUI()
 		settextstyle(15, 0, L"宋体");
 		outtextxy(300, 450, L"由软件游戏3231班高羚翔制作，版权所有2024 , 保留所有权利。");
 		break;
-	case STATE_GAME:
+	case STATE_UI_GAME:
 		setcolor(WHITE);
 		settextstyle(55, 0, L"宋体");
 		drawGame();
+		break;
+	case STATE_UI_WIN:
+		setcolor(RED);
+		settextstyle(55, 0, L"黑体");
+		outtextxy(300, 175, L"你赢了！");
+
+		setcolor(WHITE);
+		settextstyle(25, 0, L"宋体");
+		wsprintf(level, L"难度：%c", gameLevel);
+		outtextxy(350, 300, level);
+
+		setcolor(WHITE);
+		settextstyle(25, 0, L"宋体");
+		wsprintf(sc, L"金币：%d", money);
+		outtextxy(350, 350, sc);
+
+		setcolor(YELLOW);
+		settextstyle(20, 0, L"宋体");
+		outtextxy(265, 500, L"按Space键重试，按Esc键退出");
+
+		break;
+	default:
 		break;
 	}
 
 	switch (uistate)
 	{
-	case STATE_LOADING:
+	case STATE_UI_LOADING:
+		setcolor(WHITE);
+		settextstyle(55, 0, L"宋体");
+		outtextxy(110, 100, L"原 来 你 也 玩 原 神");
+		setcolor(WHITE);
+		rectangle(150, 450, 650, 480);
+		setcolor(WHITE);
+		setfillcolor(WHITE);
+		fillrectangle(151, 451, uilx, 479);
+		
 		uilx += 5;
 		if (uilx >= 650) {
-			uistate = STATE_GAME;
+			uistate = STATE_UI_GAME;
 			uilx = 150;
 		}
 		break;
@@ -398,8 +454,6 @@ int main()
 		FlushBatchDraw();
 		Sleep(50);
 	}
-	EndBatchDraw();
-	closegraph();
 
 	return 0;
 }
