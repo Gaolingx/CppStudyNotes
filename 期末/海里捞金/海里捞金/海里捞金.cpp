@@ -32,6 +32,7 @@ int state = STATE_BAI;
 TCHAR sc[20];
 TCHAR level[20];
 int money = 0;
+
 struct Item
 {
 	int x;
@@ -93,8 +94,17 @@ void levelSelect()
 
 void GameInit()
 {
+
+	for (int i = 0; i < N; i++) 
+	{
+		ii[i].islife == 1;
+
+	}
+
 	money = 0;
+	uistate = STATE_UI_GAME;
 	state = STATE_BAI;
+
 }
 void drawBG(int bgX, int bgY)
 {
@@ -163,7 +173,9 @@ void ExitGame()
 	exit(0);
 }
 
-void ctrlGame() {
+void ctrlGame()
+{
+
 	if (uistate == STATE_UI_MENU || STATE_UI_ABOUT)
 	{
 		//UI控制
@@ -207,12 +219,21 @@ void ctrlGame() {
 				{
 					state = STATE_SHEN;
 				}
-					
+
 			}
 		case STATE_UI_WIN:
-			if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+			if (MouseHit())
 			{
-				uistate = STATE_UI_GAME;
+				MOUSEMSG mm = GetMouseMsg();
+
+				switch (mm.uMsg)
+				{
+				case WM_LBUTTONDOWN:
+					GameInit();
+					break;
+				default:
+					break;
+				}
 			}
 			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
 			{
@@ -221,9 +242,7 @@ void ctrlGame() {
 		default:
 			break;
 		}
-
 	}
-
 }
 
 void scoreCalculate(int moneyNum, int randNum, bool addMoney)
@@ -351,6 +370,9 @@ void gameLogic() {
 		default:
 			break;
 		}
+
+		//TODO 判断获胜的条件
+
 	}
 }
 
@@ -411,15 +433,9 @@ void drawGameUI()
 
 		setcolor(YELLOW);
 		settextstyle(20, 0, L"宋体");
-		outtextxy(265, 500, L"按Space键重试，按Esc键退出");
+		outtextxy(250, 500, L"轻触屏幕任意区域重试，按Esc键退出");
 
 		break;
-	default:
-		break;
-	}
-
-	switch (uistate)
-	{
 	case STATE_UI_LOADING:
 		setcolor(WHITE);
 		settextstyle(55, 0, L"宋体");
@@ -435,6 +451,8 @@ void drawGameUI()
 			uistate = STATE_UI_GAME;
 			uilx = 150;
 		}
+		break;
+	default:
 		break;
 	}
 }
