@@ -84,16 +84,6 @@ void playSound(const LPCWSTR fileName)
 	PlaySound(fileName, NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
 }
 
-int collide(Item i) {
-	if (sqrt((lx - i.x) * (lx - i.x) + (ly - i.y) * (ly - i.y)) < i.r) {
-		return 1;
-	}
-	else
-	{
-		return 0;
-	}
-}
-
 void levelSelect()
 {
 	//选择难度
@@ -101,16 +91,28 @@ void levelSelect()
 	scanf_s("%c", &gameLevel);
 }
 
+void drawCoin()
+{
+	for (int i = 0; i < N; i++) {
+		if (ii[i].islife == 1) {
+			putimage(ii[i].x - ii[i].r, ii[i].y - ii[i].r, &g[ii[i].type], SRCINVERT);
+			putimage(ii[i].x - ii[i].r, ii[i].y - ii[i].r, &gbw[ii[i].type], SRCAND);
+			putimage(ii[i].x - ii[i].r, ii[i].y - ii[i].r, &g[ii[i].type], SRCINVERT);
+		}
+	}
+}
 void GameInit()
 {
 
-	for (int i = 0; i < N; i++) 
+	for (int i = 0; i < N; i++) //将数组中所有元素的islife重置为1，否则无法重新绘制金币
 	{
 		ii[i].islife == 1;
 
 	}
 
-	money = 0;
+	drawCoin(); //重新绘制所有金币
+
+	money = 0; //重试游戏会清空当前money
 	uistate = STATE_UI_GAME;
 	state = STATE_BAI;
 
@@ -153,13 +155,7 @@ void drawGame() {
 		drawLine(YELLOW, 400, 100, lx, ly);
 
 		//绘制宝石
-		for (int i = 0; i < N; i++) {
-			if (ii[i].islife == 1) {
-				putimage(ii[i].x - ii[i].r, ii[i].y - ii[i].r, &g[ii[i].type], SRCINVERT);
-				putimage(ii[i].x - ii[i].r, ii[i].y - ii[i].r, &gbw[ii[i].type], SRCAND);
-				putimage(ii[i].x - ii[i].r, ii[i].y - ii[i].r, &g[ii[i].type], SRCINVERT);
-			}
-		}
+		drawCoin();
 
 		//绘制HUD
 		
@@ -273,6 +269,16 @@ int IsWin()
 		if (ii[i].has_life == 0)return 0;
 	}
 	return 1;
+}
+
+int collide(Item i) {
+	if (sqrt((lx - i.x) * (lx - i.x) + (ly - i.y) * (ly - i.y)) < i.r) {
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 void gameLogic() {
