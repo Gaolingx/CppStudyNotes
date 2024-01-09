@@ -41,6 +41,7 @@ struct Item
 	int isdrag;
 	int type;
 	int r;
+	int has_life = 0; // 用于标记是否有islife等于1的元素
 }ii[N] = { {100,500,1,0,0,50},
 			{210,390,1,0,1,30},
 			{320,450,1,0,2,50},
@@ -256,6 +257,14 @@ void scoreCalculate(int moneyNum, int randNum, bool addMoney)
 		money -= moneyNum;
 	}
 }
+int IsWin()
+{
+	for (int i = 0; i < N; i++)
+	{
+		if (ii[i].has_life == 0)return 0;
+	}
+	return 1;
+}
 
 void gameLogic() {
 	if (uistate == STATE_UI_GAME)
@@ -372,6 +381,16 @@ void gameLogic() {
 		}
 
 		//TODO 判断获胜的条件
+		for (int i = 0; i < N; i++) {
+			if (ii[i].islife == 0) {
+				ii[i].has_life = 1; // 标记存在islife等于1的元素  
+			}
+		}
+		if (IsWin() == 1)
+		{
+			uistate = STATE_UI_WIN;
+		}
+
 
 	}
 }
