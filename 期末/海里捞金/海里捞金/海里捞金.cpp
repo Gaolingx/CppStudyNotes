@@ -176,7 +176,7 @@ void drawGame() {
 
 void ExitGame()
 {
-	system("pause");
+
 	EndBatchDraw();
 	closegraph();
 
