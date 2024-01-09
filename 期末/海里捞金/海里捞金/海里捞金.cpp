@@ -5,6 +5,9 @@
 #include <graphics.h>
 #include "stdlib.h"
 #include "math.h"
+#include "windows.h"
+#include "mmsystem.h"
+#pragma comment(lib, "winmm.lib")
 
 #define STATE_UI_MENU 10
 #define STATE_UI_ABOUT 11
@@ -74,6 +77,11 @@ void loadRes()
 	loadimage(&gbw[3], L"金币_a.png", 60, 60);
 	loadimage(&g[4], L"水晶s_rgb.png", 40, 40);
 	loadimage(&gbw[4], L"水晶s_a.png", 40, 40);
+}
+
+void playSound(const LPCWSTR fileName)
+{
+	PlaySound(fileName, NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
 }
 
 int collide(Item i) {
@@ -168,6 +176,7 @@ void drawGame() {
 
 void ExitGame()
 {
+	system("pause");
 	EndBatchDraw();
 	closegraph();
 
@@ -269,6 +278,7 @@ int IsWin()
 void gameLogic() {
 	if (uistate == STATE_UI_GAME)
 	{
+
 		lx = 400 + sin(d) * lineLength;
 		ly = 100 + cos(d) * lineLength;
 		//要做延迟补偿
@@ -380,13 +390,13 @@ void gameLogic() {
 			break;
 		}
 
-		//TODO 判断获胜的条件
+		//判断获胜的条件
 		for (int i = 0; i < N; i++) {
 			if (ii[i].islife == 0) {
 				ii[i].has_life = 1; // 标记存在islife等于1的元素  
 			}
 		}
-		if (IsWin() == 1)
+		if (IsWin() == 1 && money > 0)
 		{
 			uistate = STATE_UI_WIN;
 		}
@@ -436,6 +446,7 @@ void drawGameUI()
 		drawGame();
 		break;
 	case STATE_UI_WIN:
+
 		setcolor(RED);
 		settextstyle(55, 0, L"黑体");
 		outtextxy(300, 175, L"你赢了！");
@@ -483,6 +494,7 @@ int main()
 	levelSelect();
 	initgraph(800, 600);
 	BeginBatchDraw();
+	playSound(L"陈致逸,HOYO-MiX - 蒙德城繁忙的午后 Bustling Afternoon of Mondstadt.wav");
 	while (1)
 	{
 		drawGameUI();
