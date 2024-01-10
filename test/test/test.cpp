@@ -1,50 +1,122 @@
 ﻿// test.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
 //
 
-#include <iostream>
 #include "stdio.h"
 #include "graphics.h"
 #include "time.h"
-#define MAX_BOARD 10
+#define MAX_BOARD 15
 #define MAX_SPACE 50
+TCHAR sc[20];
+IMAGE bk;
+IMAGE zj, zjhb;
 struct Board {
 
 	int x;
 	int y;
 	int length;
+
 	COLORREF color;
 
 }board[MAX_BOARD];
-//第一块板子
-void initBoards()
+struct Player
 {
-	srand((unsigned)time(NULL));
+	int x;
+	int y;
+	int h;
+	int speed;
+	bool passedBoard;
+	COLORREF color;
+}Player;
 
-	for (size_t i = 0; i < MAX_BOARD; i++)
-	{
-		board[i].x = rand() % getwidth();
-		board[i].y = rand() % getheight();
+int isGameOver = 0;
+int score = 0;
+
+
+void initBoards() {
+	srand((unsigned)time(NULL));
+	for (int i = 0; i < MAX_BOARD; i++) {
+		if (i == 0) {
+			board[i].y = rand() % 100 + 600;
+		}
+		else {
+			board[i].y = board[i - 1].y + MAX_SPACE;
+		}
+		board[i].x = rand() % (480 - 100);
 		board[i].length = rand() % 50 + 50;
 		board[i].color = RGB(rand() % 256, rand() % 256, rand() % 256);
+
 	}
 }
-/*
-void initBoards() {
-	for (int i = 0; i < MAX_BOARD; i++) {
-		board[i].y--;
-		if (board[i].y < 0)
+void initPlayer()
+{
+	Player.h = 8;
+	Player.x = board[0].x + rand() % 50;
+	Player.y = board[0].y - 12;
+	Player.color = RED;
+	Player.speed = 2;
+}
+void drawPlayer()
+{
+	setfillcolor(Player.color);
+	solidcircle(Player.x, Player.y, Player.h);
+
+}
+int inBoard()
+{
+	for (int i = 0; i < MAX_BOARD; i++)
+	{
+		if (Player.x > board[i].x && Player.x < board[i].x + board[i].length &&
+			Player.y + Player.h >= board[i].y - 2 && Player.y + Player.h <= board[i].y + 2)
 		{
-
-			board[i].y = MAX_BOARD * MAX_SPACE;
-			board[i].x = rand() % (480 - 100);
-			board[i].length = rand() % 50 + 50;
-			board[i].color = RGB(rand() % 256, rand() % 256, rand() % 256);
-
-	    }
+			if (!Player.passedBoard) {
+				score++;
+				Player.passedBoard = 1; // 设置标志，表示已经从一个板子上掉到另一个板子上
+			}
+			return 0;
+		}
 	}
+	// 将未经过板子的标志重置
+	Player.passedBoard = 0;
+	return -1;
 }
-*/
-void drawGame() {
+void movePlayer()
+{
+
+	if (inBoard() != -1)
+	{
+		Player.y--;
+		Player.speed = 2;
+
+	}
+	else {
+		Player.y += Player.speed;
+		if (Player.speed <= 2)
+			Player.speed++;
+
+	}
+	if (Player.y > 740 || Player.y < 0) {
+		setcolor(WHITE);
+		settextstyle(30, 0, L"宋体");
+		outtextxy(50, 50, L"Game Over");
+		system("pause");
+
+
+
+	}
+	if (GetAsyncKeyState(VK_LEFT))
+	{
+		Player.x--;
+	}
+	if (GetAsyncKeyState(VK_RIGHT))
+	{
+		Player.x++;
+	}
+
+
+
+
+}
+void drawBoards() {
 	for (int i = 0; i < MAX_BOARD; i++)
 	{
 		setfillcolor(board[i].color);
@@ -52,58 +124,56 @@ void drawGame() {
 
 	}
 }
-void ctrlGame() {
 
-
-
-
-
-
-}
-
-void gameLogic() {
+void  moveBoards() {
 
 
 	for (int i = 0; i < MAX_BOARD; i++)
-
 	{
+
 		board[i].y--;
-		if (board[i].y + 5 <= 0) {
-			if (i == 0) {
-				board[i].y = rand() %60 + 600;
-			}
-			else {
-				board[i].y = board[i - 1].y + MAX_SPACE;
-			}
+		if (board[i].y < 0)
+		{
+			board[i].y = 15 * 50;
 			board[i].x = rand() % (480 - 100);
 			board[i].length = rand() % 50 + 50;
 			board[i].color = RGB(rand() % 256, rand() % 256, rand() % 256);
 		}
-		board[i].x += 0;
-		if (board[i].x > 480) {
-			board[i].x = -board[i].length;
-		}
-
 	}
+
 }
+void drawScore() {
+	settextcolor(WHITE);
+	settextstyle(50, 0, L"黑体");
+	wsprintf(sc, L"分数：%d", score);
+	outtextxy(50, 30, sc);
+}
+
+
 int main()
 {
 
-
+	loadimage(&zj, L"rwqh.png", 1408, 768);
+	loadimage(&zjhb, L"rwqhhb.png", 1408, 768);
 	initgraph(480, 760);
 	BeginBatchDraw();
-
+	srand(time(NULL));
 	initBoards();
+	initPlayer();
 	while (1) {
 
 
 		cleardevice();
-		drawGame();
-		ctrlGame();
-		gameLogic();
+		drawBoards();
+		moveBoards();
+		drawPlayer();
+		movePlayer();
+		drawScore();
 		FlushBatchDraw();
 		Sleep(20);
 	}
+
+
 	EndBatchDraw();
 	closegraph();
 	return 0;
