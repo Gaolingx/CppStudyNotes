@@ -79,6 +79,17 @@ int inBoard()
 	Player.passedBoard = 0;
 	return -1;
 }
+void ctrlGame()
+{
+	if (GetAsyncKeyState(VK_LEFT))
+	{
+		Player.x--;
+	}
+	if (GetAsyncKeyState(VK_RIGHT))
+	{
+		Player.x++;
+	}
+}
 void movePlayer()
 {
 
@@ -95,24 +106,16 @@ void movePlayer()
 
 	}
 	if (Player.y > 740 || Player.y < 0) {
+		setfillcolor(BLACK);
+		fillrectangle(0, 0, 480, 760);
 		setcolor(WHITE);
-		settextstyle(30, 0, L"宋体");
+		settextstyle(55, 0, L"宋体");
 		outtextxy(50, 50, L"Game Over");
 		system("pause");
 
 
 
 	}
-	if (GetAsyncKeyState(VK_LEFT))
-	{
-		Player.x--;
-	}
-	if (GetAsyncKeyState(VK_RIGHT))
-	{
-		Player.x++;
-	}
-
-
 
 
 }
@@ -165,6 +168,7 @@ int main()
 
 		cleardevice();
 		drawBoards();
+		ctrlGame();
 		moveBoards();
 		drawPlayer();
 		movePlayer();
