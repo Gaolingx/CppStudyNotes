@@ -44,7 +44,7 @@ struct Item
 	int isdrag;
 	int type;
 	int r;
-	int has_life = 0; // 用于标记是否有islife等于1的元素
+	int has_life; // 用于标记是否有islife等于1的元素
 }ii[N] = { {100,500,1,0,0,50},
 			{210,390,1,0,1,30},
 			{320,450,1,0,2,50},
@@ -106,7 +106,8 @@ void GameInit()
 
 	for (int i = 0; i < N; i++) //将数组中所有元素的islife重置为1，否则无法重新绘制金币
 	{
-		ii[i].islife == 1;
+		ii[i].has_life = 0;
+		ii[i].islife = 1;
 
 	}
 
