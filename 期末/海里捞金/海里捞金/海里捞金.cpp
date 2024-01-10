@@ -106,6 +106,19 @@ void GameInit()
 
 	for (int i = 0; i < N; i++) //将数组中所有元素的islife重置为1，否则无法重新绘制金币
 	{
+		ii[1].x = 100;
+		ii[2].x = 210;
+		ii[3].x = 320;
+		ii[4].x = 730;
+		ii[5].x = 500;
+		ii[6].x = 700;
+		ii[1].y = 500;
+		ii[2].y = 390;
+		ii[3].y = 450;
+		ii[4].y = 500;
+		ii[5].y = 360;
+		ii[6].y = 380;
+
 		ii[i].has_life = 0;
 		ii[i].islife = 1;
 
