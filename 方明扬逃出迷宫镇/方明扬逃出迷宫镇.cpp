@@ -90,21 +90,20 @@ void drawGame()
 		map = map0;		
 		setfillcolor(WHITE);
 		fillrectangle(0, 0, 800, 800);
-		for (i = 0; i < 25; i++)
-			for (j = 0; j < 25; j++)
-			{
+		for (i = max(0, cy - 3); i < min(30, cy + 3); i++)
+			for (j = max(0, cx - 3); j < max(0, cx + 3); j++) {
 				if (map[i][j] == 8)
 				{
 					//putimage(0, 0, 1000, 900, &klt, 0, 0, SRCCOPY);
 					//fmy appear（黑白透明底图片的设置）
-					putimage(nx + j * 32, ny + j * 32, 25, 25, &fmy, 0,0,SRCINVERT);
-					putimage(nx + j * 32, ny + j * 32, 25, 25, &fmyblack, 0, 0, SRCAND);
-					putimage(nx + j * 32, ny + j * 32, 25, 25, &fmy, 0, 0, SRCINVERT);
+					putimage(nx + 35, ny + 35, 25, 25, &fmy, 0, 0, SRCINVERT);
+					putimage(nx + 35, ny + 35, 25, 25, &fmyblack, 0, 0, SRCAND);
+					putimage(nx + 35, ny + 35, 25, 25, &fmy, 0, 0, SRCINVERT);
 					//ys appear
 					putimage(zx, zy, 35, 35, &ys, 0, 0, SRCINVERT);
 					putimage(zx, zy, 35, 35, &ysblack, 0, 0, SRCAND);
-					putimage(zx,zy, 35, 35, &ys, 0, 0, SRCINVERT);
-					
+					putimage(zx, zy, 35, 35, &ys, 0, 0, SRCINVERT);
+
 				}
 				else if (map[i][j] != 0)
 				{
@@ -145,35 +144,101 @@ void ctrlGame()
 	case STATE_GAME://控制方明扬移动(墙壁无法阻挡方明扬）
 		if (GetAsyncKeyState(VK_UP) & 0x8000)
 		{
+			/*
 			if (map[y][x - 1]!= 0)//nx - 1 >= 0 && 
 			{
 				ny -= 10;//控制人物行进速度
 				direction = 3;
 			}
+			*/
+			if (map0[cy - 1][cx] == 0)
+			{
+				map0[cy][cx] = 0;
+				map0[cy - 1][cx] = 8;
+				cy--;
+				ny -= 32;
+			}
+			if (map0[cy + 1][cx] == 10)
+			{
+				map0[cy][cx] = 0;
+				map0[1][1] = 8;
+				cy = 1;
+				cx = 1;
+			}
 		}
 		if (GetAsyncKeyState(VK_DOWN) & 0x8000)
 		{
+			/*
 			if (map[y][x + 1]== 0)// nx + 1 <= 49 &&
 			{
 			ny += 10;
 			direction = 0;
 			}
+			*/
+			if (map0[cy + 1][cx] == 0)
+			{
+				map0[cy][cx] = 0;
+				map0[cy + 1][cx] = 8;
+				cy++;
+				ny += 32;
+			}
+			if (map0[cy + 1][cx] == 10)
+			{
+				map0[cy][cx] = 0;
+				map0[1][1] = 8;
+				cy = 1;
+				cx = 1;
+			}
 		}
 		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 		{
+			/*
 			if (map[y - 1][x] != 0)//ny - 1 >= 0 && 
 			{
 				nx -= 10;
 				direction = 1;
 			}
+			*/
+			if (map0[cy][cx - 1] == 0)
+			{
+				map0[cy][cx] = 0;
+				map0[cy][cx - 1] = 8;
+				cx--;
+				nx -= 32;
+
+			}
+			if (map0[cy + 1][cx] == 10)
+			{
+				map0[cy][cx] = 0;
+				map0[1][1] = 8;
+				cy = 1;
+				cx = 1;
+			}
 		}
 		
 		if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
 		{
+			/*
 			if (map[y + 1][x] ==0)// ny + 1 <= 49 &&
 			{
 				nx += 10;
 				direction = 2;
+			}
+			*/
+			if (map0[cy][cx + 1] == 0)
+			{
+				map0[cy][cx] = 0;
+				map0[cy][cx + 1] = 8;
+				cx++;
+				nx += 32;
+
+			}
+			if (map0[cy + 1][cx] == 10)
+			{
+				map0[cy][cx] = 0;
+				map0[1][1] = 8;
+				cy = 1;
+				cx = 1;
 			}
 		}
 		
@@ -219,6 +284,8 @@ int main()
 	loadimage(&bj, L"背景2.png",1000, 900);
 	loadimage(&klt, L"骷髅头.jpg", 1000, 900);
 	BeginBatchDraw();
+	cx = 1;
+	cy = 1;
 	map = map1;
 	while (1)
 	{
