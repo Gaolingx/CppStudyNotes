@@ -22,7 +22,7 @@
 char gameLevel;
 TCHAR uic[3][100] = { L"启动！",L"关于游戏",L"退出游戏" };
 //int uistate = STATE_UI_WIN;
-int uistate = STATE_UI_WIN;
+int uistate = STATE_UI_MENU;
 int uii, uiflag = 0;
 int uilx = 150;
 
@@ -52,6 +52,7 @@ struct Item
 			{500,360,1,0,4,20},
 			{700,380,1,0,4,20} };
 
+IMAGE bg;
 IMAGE bk;
 IMAGE player;
 IMAGE player_a;
@@ -62,6 +63,7 @@ IMAGE gbw[5];
 
 void loadRes()
 {
+	loadimage(&bg, L"黄金矿工背景.jpg", 800, 600);
 	loadimage(&bk, L"量子之海background.jpg", 800, 500);
 	loadimage(&player, L"Tex_player_希儿_rgba.png", 100, 100);
 	loadimage(&player_a, L"Tex_player_希儿_a.png", 100, 100);
@@ -438,6 +440,7 @@ void drawGameUI()
 	switch (uistate)
 	{
 	case STATE_UI_MENU:
+		putimage(0, 0, &bg, SRCCOPY);
 		setcolor(RGB(rand() % 256, rand() % 256, rand() % 256));
 		settextstyle(55, 0, L"宋体");
 		outtextxy(110, 100, L"海 里 捞 金 极 速 版");
@@ -453,6 +456,7 @@ void drawGameUI()
 		break;
 
 	case STATE_UI_ABOUT:
+		putimage(0, 0, &bg, SRCCOPY);
 		setcolor(WHITE);
 		settextstyle(25, 0, L"宋体");
 		outtextxy(50, 50, L"你说的对，但是《海里捞金》是由高羚翔自主研发的一款全新开放");
@@ -470,6 +474,7 @@ void drawGameUI()
 		drawGame();
 		break;
 	case STATE_UI_WIN:
+		putimage(0, 0, &bg, SRCCOPY);
 
 		setcolor(RED);
 		settextstyle(55, 0, L"黑体");
@@ -494,6 +499,8 @@ void drawGameUI()
 
 		break;
 	case STATE_UI_LOADING:
+		putimage(0, 0, &bg, SRCCOPY);
+
 		setcolor(WHITE);
 		settextstyle(55, 0, L"宋体");
 		outtextxy(110, 100, L"原 来 你 也 玩 原 神");
