@@ -19,7 +19,7 @@
 #define  STATE_LA 2
 #define  N 6
 
-char gameLevel;
+int gameLevel;
 TCHAR uic[3][100] = { L"启动！",L"关于游戏",L"退出游戏" };
 //int uistate = STATE_UI_WIN;
 int uistate = STATE_UI_MENU;
@@ -90,7 +90,7 @@ void levelSelect()
 {
 	//选择难度
 	printf("请选择难度级别（输入数字1-5然后Enter确定）\n");
-	scanf_s("%c", &gameLevel);
+	scanf_s("%d", &gameLevel);
 }
 
 void drawCoin()
@@ -166,7 +166,7 @@ void drawHUD()
 	outtextxy(50, 30, sc);
 
 	settextstyle(50, 0, L"黑体");
-	wsprintf(level, L"难度：%c", gameLevel);
+	wsprintf(level, L"难度：%d", gameLevel);
 	outtextxy(550, 30, level);
 
 }
@@ -386,19 +386,19 @@ void gameLogic() {
 				{
 					switch (gameLevel)
 					{
-					case '1':
+					case 1:
 						scoreCalculate(10, 0, false);
 						break;
-					case '2':
+					case 2:
 						scoreCalculate(30, 0, false);
 						break;
-					case '3':
+					case 3:
 						scoreCalculate(50, 0, false);
 						break;
-					case '4':
+					case 4:
 						scoreCalculate(100, 0, false);
 						break;
-					case '5':
+					case 5:
 						scoreCalculate(150, 0, false);
 						break;
 					default:
@@ -482,7 +482,7 @@ void drawGameUI()
 
 		setcolor(WHITE);
 		settextstyle(25, 0, L"宋体");
-		wsprintf(level, L"难度：%c", gameLevel);
+		wsprintf(level, L"难度：%d", gameLevel);
 		outtextxy(350, 300, level);
 
 		setcolor(WHITE);
