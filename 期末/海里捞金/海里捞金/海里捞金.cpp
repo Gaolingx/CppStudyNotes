@@ -22,7 +22,7 @@
 char gameLevel;
 TCHAR uic[3][100] = { L"启动！",L"关于游戏",L"退出游戏" };
 //int uistate = STATE_UI_WIN;
-int uistate = STATE_UI_MENU;
+int uistate = STATE_UI_WIN;
 int uii, uiflag = 0;
 int uilx = 150;
 
@@ -127,6 +127,7 @@ void GameInit()
 	drawCoin(); //重新绘制所有金币
 
 	money = 0; //重试游戏会清空当前money
+	gameLevel = gameLevel + 1; //重试之后难度会增加
 	uistate = STATE_UI_GAME;
 	state = STATE_BAI;
 
@@ -156,6 +157,17 @@ void drawHook(int hookX, int hookY)
 	putimage(hookX, hookY, &hook, SRCINVERT);
 }
 
+void drawHUD()
+{
+	settextstyle(50, 0, L"黑体");
+	wsprintf(sc, L"金币：%d", money);
+	outtextxy(50, 30, sc);
+
+	settextstyle(50, 0, L"黑体");
+	wsprintf(level, L"难度：%c", gameLevel);
+	outtextxy(550, 30, level);
+
+}
 void drawGame() {
 	if (uistate == STATE_UI_GAME)
 	{
@@ -172,15 +184,7 @@ void drawGame() {
 		drawCoin();
 
 		//绘制HUD
-		
-		settextstyle(50, 0, L"黑体");
-		wsprintf(sc, L"金币：%d", money);
-		outtextxy(50, 30, sc);
-
-		settextstyle(50, 0, L"黑体");
-		wsprintf(level, L"难度：%c", gameLevel);
-		outtextxy(550, 30, level);
-		
+		drawHUD();
 	}
 }
 
@@ -483,7 +487,10 @@ void drawGameUI()
 
 		setcolor(YELLOW);
 		settextstyle(20, 0, L"宋体");
-		outtextxy(250, 500, L"轻触屏幕任意区域重试，按Esc键退出");
+		outtextxy(235, 500, L"轻触屏幕任意区域重试，按Esc键退出");
+		setcolor(YELLOW);
+		settextstyle(15, 0, L"宋体");
+		outtextxy(290, 540, L"选择继续挑战难度会增加哦 >_<");
 
 		break;
 	case STATE_UI_LOADING:
