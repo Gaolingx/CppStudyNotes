@@ -209,6 +209,7 @@ void ctrlGame()
 		{
 		case STATE_UI_MENU:
 			if (GetAsyncKeyState(VK_UP) & 0x8000) {
+				Sleep(50);
 				uiflag--;
 				if (uiflag == -1)
 				{
@@ -216,9 +217,11 @@ void ctrlGame()
 				}
 			}
 			if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
+				Sleep(50);
 				uiflag = (uiflag + 1) % 3;
 			}
 			if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
+				Sleep(50);
 				if (uiflag == 0)
 				{
 					uistate = STATE_UI_LOADING;
@@ -235,6 +238,7 @@ void ctrlGame()
 			break;
 		case STATE_UI_ABOUT:
 			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
+				Sleep(50);
 				uistate = STATE_UI_MENU;
 			}
 			break;
@@ -255,6 +259,7 @@ void ctrlGame()
 				switch (mm.uMsg)
 				{
 				case WM_LBUTTONDOWN:
+					Sleep(50);
 					GameInit();
 					break;
 				default:
