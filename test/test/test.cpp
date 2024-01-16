@@ -4,6 +4,9 @@
 #include "stdio.h"
 #include "graphics.h"
 #include "time.h"
+#include "windows.h"
+#include "mmsystem.h"
+#pragma comment(lib,"winmm.lib")
 
 #define STATE_UI_MENU 10
 #define STATE_UI_ABOUT 11
@@ -13,10 +16,10 @@
 #define MAX_BOARD 15
 #define MAX_SPACE 50
 TCHAR sc[20];
-IMAGE bk;
-IMAGE zj, zjhb;
 
-TCHAR uic[3][100] = { L"启动！",L"关于游戏",L"退出游戏" };
+
+
+TCHAR uic[3][100] = { L"开始游戏",L"关于游戏",L"退出游戏" };
 
 int uistate = STATE_UI_MENU;
 int uii, uiflag = 0;
@@ -42,7 +45,7 @@ struct Player
 }Player;
 
 int isGameOver = 0;
-int score = 0;
+int score = -1;
 
 void initBoards() {
 	srand((unsigned)time(NULL));
@@ -120,7 +123,7 @@ void drawGameUI()
 	case STATE_UI_ABOUT:
 		setcolor(WHITE);
 		settextstyle(25, 0, L"宋体");
-		outtextxy(50, 50, L"测试Text");
+		outtextxy(50, 50, L"这是一个小球不断下落然后得分的游戏");
 
 		break;
 	case STATE_UI_GAME:
@@ -174,18 +177,18 @@ int inBoard()
 		{
 			if (!Player.passedBoard) {
 				score++;
-				Player.passedBoard = 1; // 设置标志，表示已经从一个板子上掉到另一个板子上
+				Player.passedBoard = 1;
 			}
 			return 0;
 		}
 	}
-	// 将未经过板子的标志重置
+
 	Player.passedBoard = 0;
 	return -1;
 }
 void ctrlGame()
 {
-	/*
+
 	if (GetAsyncKeyState(VK_LEFT))
 	{
 		Player.x--;
@@ -194,14 +197,15 @@ void ctrlGame()
 	{
 		Player.x++;
 	}
-	*/
+
 	if (uistate == STATE_UI_MENU || STATE_UI_ABOUT)
 	{
-		//UI控制
+
 		switch (uistate)
 		{
 		case STATE_UI_MENU:
 			if (GetAsyncKeyState(VK_UP) & 0x8000) {
+				Sleep(50);
 				uiflag--;
 				if (uiflag == -1)
 				{
@@ -209,6 +213,7 @@ void ctrlGame()
 				}
 			}
 			if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
+				Sleep(50);
 				uiflag = (uiflag + 1) % 3;
 			}
 			if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
@@ -242,8 +247,7 @@ void ctrlGame()
 			}
 		case STATE_UI_WIN:
 
-			//TOADD
-			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
+			if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 			{
 				exit(0);
 			}
@@ -286,7 +290,7 @@ void  moveBoards() {
 		board[i].y--;
 		if (board[i].y < 0)
 		{
-			board[i].y = 15 * 50;
+			board[i].y = 20 * 50;
 			board[i].x = rand() % (480 - 100);
 			board[i].length = rand() % 50 + 50;
 			board[i].color = RGB(rand() % 256, rand() % 256, rand() % 256);
@@ -299,8 +303,8 @@ void gameLogic()
 {
 	if (uistate == STATE_UI_GAME)
 	{
-	moveBoards();
-	movePlayer();
+		moveBoards();
+		movePlayer();
 	}
 
 }
@@ -308,8 +312,8 @@ void gameLogic()
 int main()
 {
 
-	loadimage(&zj, L"rwqh.png", 1408, 768);
-	loadimage(&zjhb, L"rwqhhb.png", 1408, 768);
+
+	PlaySound(L"bgm.wav", NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
 	initgraph(480, 760);
 	BeginBatchDraw();
 	srand(time(NULL));
