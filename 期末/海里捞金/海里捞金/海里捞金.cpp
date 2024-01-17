@@ -81,9 +81,24 @@ void loadRes()
 	loadimage(&gbw[4], L"水晶s_a.png", 40, 40);
 }
 
-void playSound(const LPCWSTR fileName)
+void playBGSound(const LPCWSTR fileName)
 {
 	PlaySound(fileName, NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+}
+
+void playHookSound(const LPCWSTR fileName)
+{
+	PlaySound(fileName, NULL, SND_FILENAME | SND_ASYNC);
+}
+
+void playAddCoinSound(const LPCWSTR fileName)
+{
+	PlaySound(fileName, NULL, SND_FILENAME | SND_ASYNC);
+}
+
+void playWinSound(const LPCWSTR fileName)
+{
+	PlaySound(fileName, NULL, SND_FILENAME | SND_ASYNC);
 }
 
 void levelSelect()
@@ -549,7 +564,7 @@ int main()
 	levelSelect();
 	initgraph(800, 600);
 	BeginBatchDraw();
-	playSound(L"陈致逸,HOYO-MiX - 蒙德城繁忙的午后 Bustling Afternoon of Mondstadt.wav");
+	playBGSound(L"陈致逸,HOYO-MiX - 蒙德城繁忙的午后 Bustling Afternoon of Mondstadt.wav");
 	while (1)
 	{
 		drawGameUI();

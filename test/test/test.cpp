@@ -47,7 +47,7 @@ struct Player
 }Player;
 
 int isGameOver = 0;
-int score = -1;
+int score = 0;
 int redBoardProbability;
 
 void loadImg()
@@ -81,7 +81,7 @@ void initPlayer()
 {
 	Player.h = 8;
 	Player.x = board[0].x + rand() % 50;
-	Player.y = board[0].y - 12;
+	Player.y = board[0].y - 150;
 	Player.color = RED;
 	Player.speed = 4;
 }
@@ -275,7 +275,7 @@ void ctrlGame()
 			}
 		case STATE_UI_WIN:
 
-			if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
 			{
 				exit(0);
 			}
