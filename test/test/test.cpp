@@ -17,7 +17,7 @@
 #define MAX_SPACE 50
 TCHAR sc[20];
 
-
+IMAGE bg;
 
 TCHAR uic[3][100] = { L"开始游戏",L"关于游戏",L"退出游戏" };
 
@@ -47,6 +47,10 @@ struct Player
 int isGameOver = 0;
 int score = -1;
 
+void loadImg()
+{
+	loadimage(&bg, L"bg.png", 480, 720);
+}
 void initBoards() {
 	srand((unsigned)time(NULL));
 	for (int i = 0; i < MAX_BOARD; i++) {
@@ -92,6 +96,7 @@ void drawScore() {
 }
 void drawGame()
 {
+	putimage(0, 0, &bg, SRCCOPY);
 	drawScore();
 	drawBoards();
 	drawPlayer();
@@ -316,6 +321,7 @@ int main()
 	PlaySound(L"bgm.wav", NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
 	initgraph(480, 760);
 	BeginBatchDraw();
+	loadImg();
 	srand(time(NULL));
 	initBoards();
 	initPlayer();
