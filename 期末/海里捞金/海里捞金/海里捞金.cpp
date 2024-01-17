@@ -134,16 +134,20 @@ void GameInit()
 	state = STATE_BAI;
 
 }
-void drawBG(int bgX, int bgY)
+void drawGameBG(int UbgDstX, int UbgDstY)
 {
-	putimage(bgX, bgY, &bk, SRCCOPY);
+	putimage(UbgDstX, UbgDstY, &bk, SRCCOPY);
+}
+void drawUIBG(int GbgDstX, int GbgDstY)
+{
+	putimage(GbgDstX, GbgDstY, &bg, SRCCOPY);
 }
 
-void drawPlayer(int playerX, int playerY)
+void drawPlayer(int playerDstX, int playerDstY)
 {
-	putimage(playerX, playerY, &player, SRCINVERT);
-	putimage(playerX, playerY, &player_a, SRCAND);
-	putimage(playerX, playerY, &player, SRCINVERT);
+	putimage(playerDstX, playerDstY, &player, SRCINVERT);
+	putimage(playerDstX, playerDstY, &player_a, SRCAND);
+	putimage(playerDstX, playerDstY, &player, SRCINVERT);
 }
 
 void drawLine(COLORREF lineColor, int lineInitX, int lineInitY, int lineDstX, int lineDstY)
@@ -152,11 +156,11 @@ void drawLine(COLORREF lineColor, int lineInitX, int lineInitY, int lineDstX, in
 	line(lineInitX, lineInitY, lineDstX, lineDstY);
 }
 
-void drawHook(int hookX, int hookY)
+void drawHook(int hookDstX, int hookDstY)
 {
-	putimage(hookX, hookY, &hook, SRCINVERT);
-	putimage(hookX, hookY, &hook_a, SRCAND);
-	putimage(hookX, hookY, &hook, SRCINVERT);
+	putimage(hookDstX, hookDstY, &hook, SRCINVERT);
+	putimage(hookDstX, hookDstY, &hook_a, SRCAND);
+	putimage(hookDstX, hookDstY, &hook, SRCINVERT);
 }
 
 void drawHUD()
@@ -174,7 +178,7 @@ void drawGame() {
 	if (uistate == STATE_UI_GAME)
 	{
 		//绘制背景
-		drawBG(0, 100);
+		drawGameBG(0, 100);
 
 		//绘制玩家
 		drawPlayer(350, 0);
@@ -208,68 +212,81 @@ void ctrlGame()
 		switch (uistate)
 		{
 		case STATE_UI_MENU:
-			if (GetAsyncKeyState(VK_UP) & 0x8000) {
-				uiflag--;
-				if (uiflag == -1)
-				{
-					uiflag = 2;
+			if (uistate == STATE_UI_MENU) {
+				if (GetAsyncKeyState(VK_UP) & 0x8000) {
+					uiflag--;
+					if (uiflag == -1)
+					{
+						uiflag = 2;
+					}
+					Sleep(50);
 				}
-				Sleep(50);
-			}
-			if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
-				uiflag = (uiflag + 1) % 3;
-				Sleep(50);
-			}
-			if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
-				if (uiflag == 0)
-				{
-					uistate = STATE_UI_LOADING;
+				if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
+					uiflag = (uiflag + 1) % 3;
+					Sleep(50);
 				}
-				else if (uiflag == 1)
-				{
-					uistate = STATE_UI_ABOUT;
+				if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
+					if (uiflag == 0)
+					{
+						uistate = STATE_UI_LOADING;
+					}
+					else if (uiflag == 1)
+					{
+						uistate = STATE_UI_ABOUT;
+					}
+					else
+					{
+						ExitGame();
+					}
+					Sleep(50);
 				}
-				else
-				{
-					ExitGame();
-				}
-				Sleep(50);
 			}
 			break;
 		case STATE_UI_ABOUT:
-			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
-				uistate = STATE_UI_MENU;
-				Sleep(50);
+			if (uistate == STATE_UI_ABOUT)
+			{
+				if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
+					uistate = STATE_UI_MENU;
+					Sleep(50);
+				}
 			}
 			break;
 		case STATE_UI_GAME:
-			if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+			if (uistate == STATE_UI_WIN)
 			{
-				if (state == STATE_BAI)
+				if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 				{
-					state = STATE_SHEN;
-				}
+					if (state == STATE_BAI)
+					{
+						state = STATE_SHEN;
+					}
 
+				}
 			}
+			break;
 		case STATE_UI_WIN:
-			if (MouseHit())
+			if (uistate == STATE_UI_WIN)
 			{
-				MOUSEMSG mm = GetMouseMsg();
-
-				switch (mm.uMsg)
+				if (MouseHit())
 				{
-				case WM_LBUTTONDOWN:
-					GameInit();
-					Sleep(50);
-					break;
-				default:
-					break;
+					MOUSEMSG mm = GetMouseMsg();
+
+					switch (mm.uMsg)
+					{
+					case WM_LBUTTONDOWN:
+						GameInit();
+						Sleep(50);
+						break;
+					default:
+						break;
+					}
+				}
+				if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
+				{
+					ExitGame();
 				}
 			}
-			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
-			{
-				ExitGame();
-			}
+			break;
 		default:
 			break;
 		}
@@ -445,7 +462,8 @@ void drawGameUI()
 	switch (uistate)
 	{
 	case STATE_UI_MENU:
-		putimage(0, 0, &bg, SRCCOPY);
+		drawUIBG(0, 0);
+
 		setcolor(RGB(rand() % 256, rand() % 256, rand() % 256));
 		settextstyle(55, 0, L"宋体");
 		outtextxy(110, 100, L"海 里 捞 金 极 速 版");
@@ -461,7 +479,8 @@ void drawGameUI()
 		break;
 
 	case STATE_UI_ABOUT:
-		putimage(0, 0, &bg, SRCCOPY);
+		drawUIBG(0, 0);
+
 		setcolor(WHITE);
 		settextstyle(25, 0, L"宋体");
 		outtextxy(50, 50, L"你说的对，但是《海里捞金》是由高羚翔自主研发的一款全新开放");
@@ -479,7 +498,7 @@ void drawGameUI()
 		drawGame();
 		break;
 	case STATE_UI_WIN:
-		putimage(0, 0, &bg, SRCCOPY);
+		drawUIBG(0, 0);
 
 		setcolor(RED);
 		settextstyle(55, 0, L"黑体");
@@ -504,7 +523,7 @@ void drawGameUI()
 
 		break;
 	case STATE_UI_LOADING:
-		putimage(0, 0, &bg, SRCCOPY);
+		drawUIBG(0, 0);
 
 		setcolor(WHITE);
 		settextstyle(55, 0, L"宋体");
