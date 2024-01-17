@@ -205,91 +205,88 @@ void ExitGame()
 
 void ctrlGame()
 {
-
-	if (uistate == STATE_UI_MENU || STATE_UI_ABOUT)
+	//UI控制
+	switch (uistate)
 	{
-		//UI控制
-		switch (uistate)
+	case STATE_UI_MENU:
+		if (uistate == STATE_UI_MENU)
 		{
-		case STATE_UI_MENU:
-			if (uistate == STATE_UI_MENU) {
-				if (GetAsyncKeyState(VK_UP) & 0x8000) {
-					uiflag--;
-					if (uiflag == -1)
-					{
-						uiflag = 2;
-					}
-					Sleep(50);
-				}
-				if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
-					uiflag = (uiflag + 1) % 3;
-					Sleep(50);
-				}
-				if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
-					if (uiflag == 0)
-					{
-						uistate = STATE_UI_LOADING;
-					}
-					else if (uiflag == 1)
-					{
-						uistate = STATE_UI_ABOUT;
-					}
-					else
-					{
-						ExitGame();
-					}
-					Sleep(50);
-				}
-			}
-			break;
-		case STATE_UI_ABOUT:
-			if (uistate == STATE_UI_ABOUT)
-			{
-				if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
-					uistate = STATE_UI_MENU;
-					Sleep(50);
-				}
-			}
-			break;
-		case STATE_UI_GAME:
-			if (uistate == STATE_UI_WIN)
-			{
-				if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+			if (GetAsyncKeyState(VK_UP) & 0x8000) {
+				uiflag--;
+				if (uiflag == -1)
 				{
-					if (state == STATE_BAI)
-					{
-						state = STATE_SHEN;
-					}
-
+					uiflag = 2;
 				}
+				Sleep(50);
 			}
-			break;
-		case STATE_UI_WIN:
-			if (uistate == STATE_UI_WIN)
-			{
-				if (MouseHit())
+			if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
+				uiflag = (uiflag + 1) % 3;
+				Sleep(50);
+			}
+			if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
+				if (uiflag == 0)
 				{
-					MOUSEMSG mm = GetMouseMsg();
-
-					switch (mm.uMsg)
-					{
-					case WM_LBUTTONDOWN:
-						GameInit();
-						Sleep(50);
-						break;
-					default:
-						break;
-					}
+					uistate = STATE_UI_LOADING;
 				}
-				if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
+				else if (uiflag == 1)
+				{
+					uistate = STATE_UI_ABOUT;
+				}
+				else
 				{
 					ExitGame();
 				}
+				Sleep(50);
 			}
-			break;
-		default:
-			break;
 		}
+		break;
+	case STATE_UI_ABOUT:
+		if (uistate == STATE_UI_ABOUT)
+		{
+			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
+				uistate = STATE_UI_MENU;
+				Sleep(50);
+			}
+		}
+		break;
+	case STATE_UI_GAME:
+		if (uistate == STATE_UI_GAME)
+		{
+			if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+			{
+				if (state == STATE_BAI)
+				{
+					state = STATE_SHEN;
+				}
+
+			}
+		}
+		break;
+	case STATE_UI_WIN:
+		if (uistate == STATE_UI_WIN)
+		{
+			if (MouseHit())
+			{
+				MOUSEMSG mm = GetMouseMsg();
+
+				switch (mm.uMsg)
+				{
+				case WM_LBUTTONDOWN:
+					GameInit();
+					Sleep(50);
+					break;
+				default:
+					break;
+				}
+			}
+			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
+			{
+				ExitGame();
+			}
+		}
+		break;
+	default:
+		break;
 	}
 }
 
