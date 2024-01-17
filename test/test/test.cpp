@@ -52,12 +52,12 @@ int redBoardProbability;
 
 void loadImg()
 {
-	loadimage(&bg, L"bg.png", 480, 720);
+	loadimage(&bg, L"bg.png", 480, 780);
 }
-// 新增更新红色板子概率的函数
+// 红色板子概率的函数
 void updateRedBoardProbability() {
 	// 根据需要更新红色板子出现的概率
-	// 例如，可以根据当前分数调整概率，使得分数越高，红色板子出现的概率越大
+	// 根据当前分数调整概率，使得分数越高，红色板子出现的概率越大
 	redBoardProbability = min(0.5, redBoardProbability + 0.01 * score);
 }
 
@@ -65,7 +65,7 @@ void initBoards() {
 	srand((unsigned)time(NULL));
 	for (int i = 0; i < MAX_BOARD; i++) {
 		if (i == 0) {
-			board[i].y = rand() % 100 + 600;
+			board[i].y = rand() % 100 + 200;
 		}
 		else {
 			board[i].y = board[i - 1].y + MAX_SPACE;
@@ -113,6 +113,18 @@ void drawGame()
 	drawPlayer();
 
 }
+
+void resetGame()
+{
+	score = 0;
+	setfillcolor(BLACK);
+	fillrectangle(0, 0, 480, 760);
+	uistate = STATE_UI_GAME;
+	drawGame();
+	initBoards();
+	initPlayer();
+}
+
 void drawGameUI()
 {
 
@@ -127,7 +139,7 @@ void drawGameUI()
 		outtextxy(100, 100, L"下 一 百 层");
 		setcolor(GREEN);
 		settextstyle(20, 0, L"宋体");
-		outtextxy(110, 200, L"冷狐无伤版 v1.0.11");
+		outtextxy(110, 200, L"终极简易版 v1.0.11");
 		settextstyle(32, 0, L"宋体");
 		for (uii = 0; uii < 3; uii++) {
 			outtextxy(200, 250 + uii * 80, uic[uii]);
@@ -160,7 +172,7 @@ void drawGameUI()
 
 		setcolor(YELLOW);
 		settextstyle(20, 0, L"宋体");
-		outtextxy(75, 500, L"轻触屏幕任意区域重试，按Esc键退出");
+		outtextxy(75, 500, L"按键盘空格键重试，按Esc键退出");
 
 		break;
 	case STATE_UI_LOADING:
@@ -191,7 +203,7 @@ int inBoard() {
 			Player.y + Player.h >= board[i].y - 2 && Player.y + Player.h <= board[i].y + 2)
 		{
 
-			if (!Player.passedBoard)
+			if (Player.passedBoard == 0)
 			{
 				score++;
 				Player.passedBoard = true;
@@ -216,33 +228,22 @@ int inBoard() {
 
 void ctrlGame()
 {
-
-	if (GetAsyncKeyState(VK_LEFT))
+	switch (uistate)
 	{
-		Player.x--;
-	}
-	if (GetAsyncKeyState(VK_RIGHT))
-	{
-		Player.x++;
-	}
-
-	if (uistate == STATE_UI_MENU || STATE_UI_ABOUT)
-	{
-
-		switch (uistate)
-		{
-		case STATE_UI_MENU:
+	case STATE_UI_MENU:
+		if (uistate == STATE_UI_MENU) {
 			if (GetAsyncKeyState(VK_UP) & 0x8000) {
-				Sleep(50);
 				uiflag--;
 				if (uiflag == -1)
 				{
 					uiflag = 2;
+					Sleep(50);
 				}
 			}
 			if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
-				Sleep(50);
+
 				uiflag = (uiflag + 1) % 3;
+				Sleep(50);
 			}
 			if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
 				if (uiflag == 0)
@@ -258,32 +259,48 @@ void ctrlGame()
 					exit(0);
 				}
 			}
-			break;
-		case STATE_UI_ABOUT:
-			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
-				uistate = STATE_UI_MENU;
-			}
-			break;
-		case STATE_UI_GAME:
+		}
+		break;
+	case STATE_UI_ABOUT:
+		if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
+			uistate = STATE_UI_MENU;
+		}
+		break;
+	case STATE_UI_GAME:
+		if (uistate == STATE_UI_GAME)
+		{
 			if (GetAsyncKeyState(VK_LEFT))
 			{
-				Player.x--;
+				Player.x -= 2;
 			}
 			if (GetAsyncKeyState(VK_RIGHT))
 			{
-				Player.x++;
+				Player.x += 2;
 			}
-		case STATE_UI_WIN:
-
 			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
 			{
 				exit(0);
 			}
-		default:
-			break;
 		}
+		break;
+	case STATE_UI_WIN:
+		if (uistate == STATE_UI_WIN)
+		{
+			if (GetAsyncKeyState(VK_SPACE) & 0X8000)
+			{
+				resetGame();
+			}
+			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
+			{
+				exit(0);
+			}
+		}
+		break;
+	default:
+		break;
 	}
 }
+
 
 void movePlayer()
 {
@@ -334,6 +351,11 @@ void gameLogic()
 	{
 		moveBoards();
 		movePlayer();
+	}
+
+	if (score >= 100)
+	{
+		uistate = STATE_UI_WIN;
 	}
 
 }
