@@ -41,16 +41,26 @@ struct Player
 	int h;
 	int speed;
 	bool passedBoard;
+	bool onRedBoard;
+
 	COLORREF color;
 }Player;
 
 int isGameOver = 0;
 int score = -1;
+int redBoardProbability;
 
 void loadImg()
 {
 	loadimage(&bg, L"bg.png", 480, 720);
 }
+// 新增更新红色板子概率的函数
+void updateRedBoardProbability() {
+	// 根据需要更新红色板子出现的概率
+	// 例如，可以根据当前分数调整概率，使得分数越高，红色板子出现的概率越大
+	redBoardProbability = min(0.5, redBoardProbability + 0.01 * score);
+}
+
 void initBoards() {
 	srand((unsigned)time(NULL));
 	for (int i = 0; i < MAX_BOARD; i++) {
@@ -62,7 +72,8 @@ void initBoards() {
 		}
 		board[i].x = rand() % (480 - 100);
 		board[i].length = rand() % 50 + 50;
-		board[i].color = RGB(rand() % 256, rand() % 256, rand() % 256);
+		// 根据红色板子的概率设置板子颜色
+		board[i].color = (rand() % 100 < redBoardProbability) ? RED : RGB(rand() % 256, rand() % 256, rand() % 256);
 
 	}
 }
@@ -72,7 +83,7 @@ void initPlayer()
 	Player.x = board[0].x + rand() % 50;
 	Player.y = board[0].y - 12;
 	Player.color = RED;
-	Player.speed = 2;
+	Player.speed = 4;
 }
 void drawPlayer()
 {
@@ -173,24 +184,36 @@ void drawGameUI()
 	}
 }
 
-int inBoard()
-{
-	for (int i = 0; i < MAX_BOARD; i++)
-	{
+int inBoard() {
+	for (int i = 0; i < MAX_BOARD; i++) {
+		// 检测小球与板子的碰撞
 		if (Player.x > board[i].x && Player.x < board[i].x + board[i].length &&
 			Player.y + Player.h >= board[i].y - 2 && Player.y + Player.h <= board[i].y + 2)
 		{
-			if (!Player.passedBoard) {
+
+			if (!Player.passedBoard)
+			{
 				score++;
-				Player.passedBoard = 1;
+				Player.passedBoard = true;
+			}
+			// 判断板子颜色是否为红色
+			if (board[i].color == RED) {
+				if (!Player.onRedBoard) {
+					score--;  // 小球踩在红色板子上，扣一分
+					Player.onRedBoard = true;
+				}
+			}
+			else {
+				Player.onRedBoard = false;
 			}
 			return 0;
 		}
 	}
-
-	Player.passedBoard = 0;
+	Player.passedBoard = false;
+	Player.onRedBoard = false;
 	return -1;
 }
+
 void ctrlGame()
 {
 
@@ -306,6 +329,7 @@ void  moveBoards() {
 
 void gameLogic()
 {
+	updateRedBoardProbability();
 	if (uistate == STATE_UI_GAME)
 	{
 		moveBoards();
