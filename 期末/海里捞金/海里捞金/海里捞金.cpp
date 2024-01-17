@@ -316,13 +316,13 @@ void scoreCalculate(int moneyNum, int randNum, bool addMoney)
 		money -= moneyNum;
 	}
 }
-int IsWin()
+bool IsWin()
 {
 	for (int i = 0; i < N; i++)
 	{
 		if (ii[i].has_life == 0)return 0;
 	}
-	return 1;
+	return true;
 }
 
 int collide(Item i) {
@@ -456,7 +456,7 @@ void gameLogic() {
 				ii[i].has_life = 1; // 标记存在islife等于1的元素  
 			}
 		}
-		if (IsWin() == 1 && money > 0)
+		if (IsWin() == true && money > 0)
 		{
 			uistate = STATE_UI_WIN;
 		}
