@@ -260,7 +260,7 @@ void ctrlGame()
 		{
 			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
 				uistate = STATE_UI_MENU;
-				Sleep(50);
+				Sleep(20);
 			}
 		}
 		break;
@@ -288,7 +288,7 @@ void ctrlGame()
 				{
 				case WM_LBUTTONDOWN:
 					GameInit();
-					Sleep(50);
+					Sleep(20);
 					break;
 				default:
 					break;
@@ -450,12 +450,13 @@ void gameLogic() {
 			break;
 		}
 
-		//判断获胜的条件
+		//记录获胜的条件
 		for (int i = 0; i < N; i++) {
 			if (ii[i].islife == 0) {
 				ii[i].has_life = 1; // 标记存在islife等于1的元素  
 			}
 		}
+		//获胜条件：IsWin函数返回true且分数大于0
 		if (IsWin() == true && money > 0)
 		{
 			uistate = STATE_UI_WIN;
@@ -470,6 +471,7 @@ void drawGameUI()
 
 	setfillcolor(BLACK);
 	fillrectangle(0, 0, 800, 600);
+	setbkmode(TRANSPARENT); //指定输出阴影和文本时的背景模式
 
 	switch (uistate)
 	{
@@ -486,7 +488,7 @@ void drawGameUI()
 		for (uii = 0; uii < 3; uii++) {
 			outtextxy(330, 250 + uii * 80, uic[uii]);
 		}
-		setfillcolor(BLACK);
+		setfillcolor(RED);
 		fillrectangle(260, 255 + uiflag * 80, 290, 285 + uiflag * 80);
 		break;
 
