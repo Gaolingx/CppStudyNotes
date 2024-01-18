@@ -320,7 +320,8 @@ bool IsWin()
 {
 	for (int i = 0; i < N; i++)
 	{
-		if (ii[i].has_life == 0)return 0;
+		if (ii[i].has_life == 0)
+			return false;
 	}
 	return true;
 }
@@ -339,6 +340,7 @@ void gameLogic() {
 	if (uistate == STATE_UI_GAME)
 	{
 
+		//绳子末端坐标
 		lx = 400 + sin(d) * lineLength;
 		ly = 100 + cos(d) * lineLength;
 		//要做延迟补偿
@@ -363,7 +365,7 @@ void gameLogic() {
 				}
 			}
 
-
+			//收回绳子的逻辑
 			if (lineLength > 500) {
 				state = STATE_LA;
 			}
@@ -382,6 +384,7 @@ void gameLogic() {
 					if (ii[i].isdrag == 1) {
 						ii[i].islife = 0;
 						ii[i].isdrag = 0;
+						//增加分数的逻辑
 						switch (ii[i].type)
 						{
 						case 0:
@@ -541,7 +544,7 @@ void drawGameUI()
 
 		setcolor(WHITE);
 		settextstyle(55, 0, L"宋体");
-		outtextxy(110, 100, L"原 来 你 也 玩 原 神");
+		outtextxy(110, 100, L"游 戏 努 力 加 载 中");
 		setcolor(WHITE);
 		rectangle(150, 450, 650, 480);
 		setcolor(WHITE);
